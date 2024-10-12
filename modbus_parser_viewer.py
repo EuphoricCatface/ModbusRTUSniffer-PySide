@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QMainWindow
 from PySide6.QtGui import QTextCursor
 from PySide6.QtCore import Qt
 
+import modbus_parser
 import collections
 
 from modbus_parser_viewer_ui import Ui_ModbusParserViewer
@@ -13,11 +14,14 @@ class ModbusParserViewer(QMainWindow):
         self.ui = Ui_ModbusParserViewer()
         self.ui.setupUi(self)
 
+        self.parser = modbus_parser.ModbusParser(self.parser_callback, self.parser_callback)
         self.raw_text_pause_queue: collections.deque[tuple[str, any]] = collections.deque()
         self.ui.checkBox_pause.checkStateChanged.connect(self.unpause_handler)
+        self.raw_line_to_packet_dict = dict()
 
     def inject(self, data: bytes):
         self.add_to_raw(data)
+        self.parser.process_incoming_packet(data)
 
     def add_to_raw(self, data: bytes):
         if self.ui.checkBox_pause.isChecked():
@@ -45,3 +49,6 @@ class ModbusParserViewer(QMainWindow):
     def bytes_to_hex_str(data: bytes):
         hex_list = [f"{b:02X}" for b in data]
         return " ".join(hex_list)
+
+    def parser_callback(self, msg, packet):
+        pass
