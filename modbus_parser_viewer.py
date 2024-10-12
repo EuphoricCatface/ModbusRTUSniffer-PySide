@@ -44,6 +44,8 @@ class ModbusParserViewer(QMainWindow):
             match task:
                 case "add":
                     self.add_to_raw(data)
+                case "packet_reg":
+                    self.packet_reg_to_raw(data[0], data[1])
 
     @staticmethod
     def bytes_to_hex_str(data: bytes):
@@ -51,4 +53,32 @@ class ModbusParserViewer(QMainWindow):
         return " ".join(hex_list)
 
     def parser_callback(self, msg, packet):
-        pass
+        self.packet_reg_to_raw(msg, packet)
+
+    def packet_reg_to_raw(self, msg, packet):
+        if self.ui.checkBox_pause.isChecked():
+            self.raw_text_pause_queue.append(("packet_reg", (msg, packet)))
+            return
+
+        packet_hex = self.bytes_to_hex_str(packet)
+        self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
+        block = self.ui.plainTextEdit_Raw.textCursor().block()
+        block_text = block.text()
+        index_in_block = block_text.rfind(packet_hex)
+        global_index = block.position() + index_in_block
+        global_index_end = global_index + len(packet_hex)
+
+        t_cursor = self.ui.plainTextEdit_Raw.textCursor()
+        t_cursor.setPosition(global_index_end)
+        t_cursor.deleteChar()
+        self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
+        self.ui.plainTextEdit_Raw.insertPlainText("\n")
+        t_cursor.setPosition(global_index)
+        if t_cursor.positionInBlock() != 0:
+            t_cursor.deletePreviousChar()
+        if t_cursor.positionInBlock() != 0:
+            self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
+            self.ui.plainTextEdit_Raw.insertPlainText("\n")
+
+        packet_block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
+        self.raw_line_to_packet_dict[packet_block_idx] = msg
