@@ -54,6 +54,7 @@ class ModbusParserViewer(QMainWindow):
 
     def parser_callback(self, msg, packet):
         self.packet_reg_to_raw(msg, packet)
+        self.packet_show_parsed(msg)
 
     def packet_reg_to_raw(self, msg, packet):
         if self.ui.checkBox_pause.isChecked():
@@ -82,3 +83,8 @@ class ModbusParserViewer(QMainWindow):
 
         packet_block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
         self.raw_line_to_packet_dict[packet_block_idx] = msg
+
+    def packet_show_parsed(self, msg):
+        self.ui.plainTextEdit_Parsed.clear()
+        self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
+        self.ui.plainTextEdit_Parsed.appendPlainText(str(msg.__dict__))
