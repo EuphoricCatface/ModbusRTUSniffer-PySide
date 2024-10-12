@@ -11,7 +11,9 @@ class ModbusParserViewer(QMainWindow):
         self.ui.setupUi(self)
 
     def inject(self, data: bytes):
-        # DUMMY!
+        self.add_to_raw(data)
+
+    def add_to_raw(self, data: bytes):
         hex_list = [f"{b:02X}" for b in data]
         hex_str = " ".join(hex_list)
         # QPlainTextEdit.appendPlainText() will add a newline before the appending text
