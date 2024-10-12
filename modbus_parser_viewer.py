@@ -21,8 +21,9 @@ class ModbusParserViewer(QMainWindow):
         self.parser = modbus_parser.ModbusParser(self.parser_callback, self.parser_callback)
         self.raw_text_pause_queue: collections.deque[tuple[str, any]] = collections.deque()
         self.ui.checkBox_pause.checkStateChanged.connect(self.unpause_handler)
-        self.raw_line_to_packet_dict = dict()
         self.device_dict: dict[int, device_value_table.DeviceValueTable] = dict()
+        self.callback_count = 0
+        self.callback_count_to_packet_dict = dict()
 
     def inject(self, data: bytes):
         self.add_to_raw(data)
@@ -50,7 +51,7 @@ class ModbusParserViewer(QMainWindow):
                 case "add":
                     self.add_to_raw(data)
                 case "packet_reg":
-                    self.packet_reg_to_raw(data[0], data[1], data[2])
+                    self.packet_reg_to_raw(data[0], data[1], data[2], data[3])
 
     @staticmethod
     def bytes_to_hex_str(data: bytes):
@@ -59,7 +60,10 @@ class ModbusParserViewer(QMainWindow):
 
     def parser_callback(self, msg, packet):
         now = datetime.datetime.now()
-        self.packet_reg_to_raw(msg, packet, now)
+
+        self.callback_count += 1
+        self.packet_reg_to_raw(self.callback_count, msg, packet, now)
+
         if not self.ui.checkBox_pause.isChecked():
             self.packet_show_parsed(msg)
 
@@ -76,9 +80,9 @@ class ModbusParserViewer(QMainWindow):
             self.ui.tabWidget.addTab(tab_page, f"Addr {msg.slave_id}")
             self.device_dict[msg.slave_id] = table
 
-    def packet_reg_to_raw(self, msg, packet, now: datetime.datetime):
+    def packet_reg_to_raw(self, callback_count, msg, packet, now: datetime.datetime):
         if self.ui.checkBox_pause.isChecked():
-            self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
+            self.raw_text_pause_queue.append(("packet_reg", (callback_count, msg, packet, now)))
             return
 
         packet_hex = self.bytes_to_hex_str(packet)
@@ -102,7 +106,7 @@ class ModbusParserViewer(QMainWindow):
             self.ui.plainTextEdit_Raw.insertPlainText("\n")
 
         packet_block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
-        self.raw_line_to_packet_dict[packet_block_idx] = (now, msg)
+        self.callback_count_to_packet_dict[callback_count] = (packet_block_idx, now, msg)
 
         self.ui.plainTextEdit_Raw.insertPlainText("[" + now.isoformat(' ') + "] ")
 
