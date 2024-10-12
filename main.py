@@ -7,8 +7,8 @@ from pymodbus.framer import FramerRTU
 
 
 def callback(*args, **kwargs):
-    print(args)
-    print(kwargs)
+    for msg in args:
+        print(type(msg), msg.__dict__)
 
 
 def main():
