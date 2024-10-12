@@ -14,8 +14,8 @@ def callback(*args, **kwargs):
 def main():
     logging.getLogger().setLevel(logging.DEBUG)
 
-    client_framer = FramerRTU(ClientDecoder(), list(range(128)))
-    server_framer = FramerRTU(ServerDecoder(), list(range(128)))
+    client_framer = FramerRTU(ClientDecoder(), [])
+    server_framer = FramerRTU(ServerDecoder(), [])
 
     test_packet = b"\x01\x03\x01\x31\x00\x1E\x95\xF1"
 
