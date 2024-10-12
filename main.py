@@ -5,10 +5,16 @@ from pymodbus.framer import FramerRTU
 from pymodbus.exceptions import ModbusIOException
 
 
-def print_msgs(*args, **kwargs):
-    for msg in args:
-        print(kwargs.get("packet", None))
-        print(type(msg).__name__, msg.__dict__)
+def print_msg_client(msg, **kwargs):
+    print("client framer:")
+    print(kwargs.get("packet", None))
+    print(type(msg).__name__, msg.__dict__)
+
+
+def print_msg_server(msg, **kwargs):
+    print("server framer:")
+    print(kwargs.get("packet", None))
+    print(type(msg).__name__, msg.__dict__)
 
 
 def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
@@ -68,10 +74,8 @@ def main():
     ]
 
     for data in test_stream:
-        print("client_framer:")
-        client_framer.processIncomingPacket(data, print_msgs)
-        print("server_framer:")
-        server_framer.processIncomingPacket(data, print_msgs)
+        client_framer.processIncomingPacket(data, print_msg_client)
+        server_framer.processIncomingPacket(data, print_msg_server)
 
 
 if __name__ == "__main__":
