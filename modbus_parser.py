@@ -5,9 +5,9 @@ from pymodbus.framer import FramerRTU
 from pymodbus.exceptions import ModbusIOException
 
 
-def print_msg_client(msg, **kwargs):
+def print_msg_client(msg, packet):
     print("client framer:")
-    print(kwargs.get("packet", None))
+    print(packet)
     print(type(msg).__name__, msg.__dict__)
 
 
@@ -53,7 +53,7 @@ def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
         if tid and result.transaction_id and tid != result.transaction_id:
             self.databuffer = b''
         else:
-            callback(result, packet=data)  # defer or push to a thread?
+            callback(msg=result, packet=data)  # defer or push to a thread?
 
 
 class ModbusParser:
