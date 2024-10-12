@@ -1,5 +1,3 @@
-import logging
-
 from pymodbus.factory import ClientDecoder
 from pymodbus.factory import ServerDecoder
 from pymodbus.framer import FramerRTU
@@ -53,8 +51,6 @@ def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
 
 
 def main():
-    logging.getLogger().setLevel(logging.DEBUG)
-
     client_framer = FramerRTU(ClientDecoder(), [])
     client_framer.processIncomingPacket = \
         lambda *args, **kwargs: processIncomingPacket_mod(client_framer, *args, **kwargs)
