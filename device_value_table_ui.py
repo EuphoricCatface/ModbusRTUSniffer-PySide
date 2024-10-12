@@ -16,8 +16,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QHeaderView,
-    QLabel, QSizePolicy, QSpinBox, QTableWidget,
-    QTableWidgetItem, QWidget)
+    QSizePolicy, QTableWidget, QTableWidgetItem, QWidget)
 
 class Ui_DeviceValueTable(object):
     def setupUi(self, DeviceValueTable):
@@ -26,30 +25,12 @@ class Ui_DeviceValueTable(object):
         DeviceValueTable.resize(651, 599)
         self.gridLayout = QGridLayout(DeviceValueTable)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label_width = QLabel(DeviceValueTable)
-        self.label_width.setObjectName(u"label_width")
-
-        self.gridLayout.addWidget(self.label_width, 0, 0, 1, 1)
-
-        self.spinBox_width = QSpinBox(DeviceValueTable)
-        self.spinBox_width.setObjectName(u"spinBox_width")
-        self.spinBox_width.setValue(16)
-
-        self.gridLayout.addWidget(self.spinBox_width, 0, 1, 1, 1)
-
         self.checkBox_sameRegisters = QCheckBox(DeviceValueTable)
         self.checkBox_sameRegisters.setObjectName(u"checkBox_sameRegisters")
         self.checkBox_sameRegisters.setEnabled(False)
         self.checkBox_sameRegisters.setChecked(True)
 
-        self.gridLayout.addWidget(self.checkBox_sameRegisters, 0, 2, 1, 1)
-
-        self.checkBox_sameRW = QCheckBox(DeviceValueTable)
-        self.checkBox_sameRW.setObjectName(u"checkBox_sameRW")
-        self.checkBox_sameRW.setEnabled(False)
-        self.checkBox_sameRW.setChecked(True)
-
-        self.gridLayout.addWidget(self.checkBox_sameRW, 0, 3, 1, 1)
+        self.gridLayout.addWidget(self.checkBox_sameRegisters, 0, 0, 1, 1)
 
         self.tableWidget_main = QTableWidget(DeviceValueTable)
         if (self.tableWidget_main.columnCount() < 15):
@@ -88,11 +69,15 @@ class Ui_DeviceValueTable(object):
         self.tableWidget_main.verticalHeader().setMinimumSectionSize(15)
         self.tableWidget_main.verticalHeader().setDefaultSectionSize(25)
 
-        self.gridLayout.addWidget(self.tableWidget_main, 1, 0, 1, 4)
+        self.gridLayout.addWidget(self.tableWidget_main, 1, 0, 1, 2)
 
-#if QT_CONFIG(shortcut)
-        self.label_width.setBuddy(self.spinBox_width)
-#endif // QT_CONFIG(shortcut)
+        self.checkBox_sameRW = QCheckBox(DeviceValueTable)
+        self.checkBox_sameRW.setObjectName(u"checkBox_sameRW")
+        self.checkBox_sameRW.setEnabled(False)
+        self.checkBox_sameRW.setChecked(True)
+
+        self.gridLayout.addWidget(self.checkBox_sameRW, 0, 1, 1, 1)
+
 
         self.retranslateUi(DeviceValueTable)
 
@@ -101,9 +86,7 @@ class Ui_DeviceValueTable(object):
 
     def retranslateUi(self, DeviceValueTable):
         DeviceValueTable.setWindowTitle(QCoreApplication.translate("DeviceValueTable", u"DeviceValueTable", None))
-        self.label_width.setText(QCoreApplication.translate("DeviceValueTable", u"Width:", None))
         self.checkBox_sameRegisters.setText(QCoreApplication.translate("DeviceValueTable", u"Holding/input registers are the same", None))
-        self.checkBox_sameRW.setText(QCoreApplication.translate("DeviceValueTable", u"Read/write are the same", None))
         ___qtablewidgetitem = self.tableWidget_main.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("DeviceValueTable", u"0", None));
         ___qtablewidgetitem1 = self.tableWidget_main.horizontalHeaderItem(1)
@@ -132,5 +115,6 @@ class Ui_DeviceValueTable(object):
         ___qtablewidgetitem12.setText(QCoreApplication.translate("DeviceValueTable", u"E", None));
         ___qtablewidgetitem13 = self.tableWidget_main.horizontalHeaderItem(14)
         ___qtablewidgetitem13.setText(QCoreApplication.translate("DeviceValueTable", u"F", None));
+        self.checkBox_sameRW.setText(QCoreApplication.translate("DeviceValueTable", u"Read/write are the same", None))
     # retranslateUi
 
