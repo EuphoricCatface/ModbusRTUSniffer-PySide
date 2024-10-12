@@ -8,7 +8,7 @@ from pymodbus.exceptions import ModbusIOException
 def print_msgs(*args, **kwargs):
     for msg in args:
         print(kwargs.get("packet", None))
-        print(type(msg), msg.__dict__)
+        print(type(msg).__name__, msg.__dict__)
 
 
 def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
