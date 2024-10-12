@@ -24,9 +24,33 @@ class SerialReader:
         return self.connection.read(in_waiting)
 
 
+class SerialReaderTest:
+    def __init__(self, port: str, baudrate: int):
+        self.port = port
+        self.baudrate = baudrate
+
+        self.cur_line = 0
+        self.test_lines = [
+            b"\x01\x03\x01\x31\x00\x1E\x95\xF1",  # msg 1
+            b"\x01\x03\x02\x2E\x30\xA5\xF0",  # msg 2
+            b"\x01\x03\x01",  # msg 1
+            b"\x31\x00\x1E",  # msg 1
+            b"\x95\xF1\x01\x03\x02",  # msg 1 / msg 2
+            b"\x2E\x30\xA5\xF0",  # msg 2
+        ]
+
+    def read(self):
+        rtn = self.test_lines[self.cur_line]
+        self.cur_line += 1
+        if self.cur_line >= len(self.test_lines):
+            self.cur_line = 0
+        return rtn
+
+
 def main():
     dotenv.load_dotenv()
-    reader = SerialReader(
+    # reader = SerialReader(
+    reader = SerialReaderTest(
         os.getenv("PORT"),
         int(os.getenv("BAUDRATE"))
     )
@@ -42,7 +66,8 @@ def main():
             return
         viewer.inject(data)
     timer = QTimer(app)
-    timer.setInterval(1)
+    # timer.setInterval(1)
+    timer.setInterval(1000)
     timer.timeout.connect(serial_inject)
     timer.start()
 
