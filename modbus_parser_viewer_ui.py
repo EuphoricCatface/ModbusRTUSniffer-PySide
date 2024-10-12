@@ -15,8 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QMainWindow, QPlainTextEdit,
-    QSizePolicy, QTabWidget, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QMainWindow,
+    QPlainTextEdit, QSizePolicy, QTabWidget, QWidget)
 
 class Ui_ModbusParserViewer(object):
     def setupUi(self, ModbusParserViewer):
@@ -37,13 +37,18 @@ class Ui_ModbusParserViewer(object):
         self.plainTextEdit_Raw.setObjectName(u"plainTextEdit_Raw")
         self.plainTextEdit_Raw.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByKeyboard|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.gridLayout_2.addWidget(self.plainTextEdit_Raw, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.plainTextEdit_Raw, 1, 0, 1, 1)
 
         self.plainTextEdit_Parsed = QPlainTextEdit(self.tab_raw)
         self.plainTextEdit_Parsed.setObjectName(u"plainTextEdit_Parsed")
         self.plainTextEdit_Parsed.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByKeyboard|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.gridLayout_2.addWidget(self.plainTextEdit_Parsed, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.plainTextEdit_Parsed, 1, 1, 1, 1)
+
+        self.checkBox_pause = QCheckBox(self.tab_raw)
+        self.checkBox_pause.setObjectName(u"checkBox_pause")
+
+        self.gridLayout_2.addWidget(self.checkBox_pause, 0, 0, 1, 1)
 
         self.tabWidget.addTab(self.tab_raw, "")
 
@@ -61,6 +66,7 @@ class Ui_ModbusParserViewer(object):
 
     def retranslateUi(self, ModbusParserViewer):
         ModbusParserViewer.setWindowTitle(QCoreApplication.translate("ModbusParserViewer", u"ModbusParserViewer", None))
+        self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_raw), QCoreApplication.translate("ModbusParserViewer", u"Raw Packets", None))
     # retranslateUi
 
