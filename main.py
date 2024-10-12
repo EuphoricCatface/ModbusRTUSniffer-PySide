@@ -56,13 +56,25 @@ def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
             callback(result, packet=data)  # defer or push to a thread?
 
 
+class ModbusParser:
+    def __init__(self, client_framer_callback, server_framer_callback):
+        self.client_framer = FramerRTU(ClientDecoder(), [])
+        self.client_framer.processIncomingPacket = \
+            lambda *args, **kwargs: processIncomingPacket_mod(self.client_framer, *args, **kwargs)
+        self.server_framer = FramerRTU(ServerDecoder(), [])
+        self.server_framer.processIncomingPacket = \
+            lambda *args, **kwargs: processIncomingPacket_mod(self.server_framer, *args, **kwargs)
+
+        self.client_framer_callback = client_framer_callback
+        self.server_framer_callback = server_framer_callback
+
+    def process_incoming_packet(self, data):
+        self.client_framer.processIncomingPacket(data, self.client_framer_callback)
+        self.server_framer.processIncomingPacket(data, self.server_framer_callback)
+
+
 def main():
-    client_framer = FramerRTU(ClientDecoder(), [])
-    client_framer.processIncomingPacket = \
-        lambda *args, **kwargs: processIncomingPacket_mod(client_framer, *args, **kwargs)
-    server_framer = FramerRTU(ServerDecoder(), [])
-    server_framer.processIncomingPacket = \
-        lambda *args, **kwargs: processIncomingPacket_mod(server_framer, *args, **kwargs)
+    parser = ModbusParser(print_msg_client, print_msg_server)
 
     test_stream = [
         b"\x01\x03\x01\x31\x00\x1E\x95\xF1",  # msg 1
@@ -74,8 +86,7 @@ def main():
     ]
 
     for data in test_stream:
-        client_framer.processIncomingPacket(data, print_msg_client)
-        server_framer.processIncomingPacket(data, print_msg_server)
+        parser.process_incoming_packet(data)
 
 
 if __name__ == "__main__":
