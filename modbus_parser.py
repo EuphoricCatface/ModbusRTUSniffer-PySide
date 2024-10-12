@@ -35,6 +35,7 @@ def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
         if self.databuffer == b'':
             return
         used_len, data = self.decode(self.databuffer)
+        wastebin = self.databuffer[:used_len]
         self.databuffer = self.databuffer[used_len:]
         if not data:
             if used_len:
@@ -53,7 +54,9 @@ def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
         if tid and result.transaction_id and tid != result.transaction_id:
             self.databuffer = b''
         else:
-            callback(msg=result, packet=data)  # defer or push to a thread?
+            full_packet_length = len(data) + 3  # assuming slave_addr (1 byte) + CRC (2 byte)
+            full_packet = wastebin[-full_packet_length:]
+            callback(msg=result, packet=full_packet)  # defer or push to a thread?
 
 
 class ModbusParser:
