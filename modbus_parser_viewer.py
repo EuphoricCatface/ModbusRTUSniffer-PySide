@@ -1,3 +1,5 @@
+import datetime
+
 from PySide6.QtWidgets import QMainWindow
 from PySide6.QtGui import QTextCursor
 from PySide6.QtCore import Qt
@@ -45,7 +47,7 @@ class ModbusParserViewer(QMainWindow):
                 case "add":
                     self.add_to_raw(data)
                 case "packet_reg":
-                    self.packet_reg_to_raw(data[0], data[1])
+                    self.packet_reg_to_raw(data[0], data[1], data[2])
 
     @staticmethod
     def bytes_to_hex_str(data: bytes):
@@ -53,12 +55,13 @@ class ModbusParserViewer(QMainWindow):
         return " ".join(hex_list)
 
     def parser_callback(self, msg, packet):
-        self.packet_reg_to_raw(msg, packet)
+        now = datetime.datetime.now()
+        self.packet_reg_to_raw(msg, packet, now)
         self.packet_show_parsed(msg)
 
-    def packet_reg_to_raw(self, msg, packet):
+    def packet_reg_to_raw(self, msg, packet, now: datetime.datetime):
         if self.ui.checkBox_pause.isChecked():
-            self.raw_text_pause_queue.append(("packet_reg", (msg, packet)))
+            self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
             return
 
         packet_hex = self.bytes_to_hex_str(packet)
@@ -75,14 +78,16 @@ class ModbusParserViewer(QMainWindow):
         self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
         self.ui.plainTextEdit_Raw.insertPlainText("\n")
         t_cursor.setPosition(global_index)
+        self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
         if t_cursor.positionInBlock() != 0:
             t_cursor.deletePreviousChar()
         if t_cursor.positionInBlock() != 0:
-            self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
             self.ui.plainTextEdit_Raw.insertPlainText("\n")
 
         packet_block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
-        self.raw_line_to_packet_dict[packet_block_idx] = msg
+        self.raw_line_to_packet_dict[packet_block_idx] = (now, msg)
+
+        self.ui.plainTextEdit_Raw.insertPlainText("[" + now.isoformat(' ') + "] ")
 
     def packet_show_parsed(self, msg):
         self.ui.plainTextEdit_Parsed.clear()
