@@ -57,7 +57,8 @@ class ModbusParserViewer(QMainWindow):
     def parser_callback(self, msg, packet):
         now = datetime.datetime.now()
         self.packet_reg_to_raw(msg, packet, now)
-        self.packet_show_parsed(msg)
+        if not self.ui.checkBox_pause.isChecked():
+            self.packet_show_parsed(msg)
 
     def packet_reg_to_raw(self, msg, packet, now: datetime.datetime):
         if self.ui.checkBox_pause.isChecked():
