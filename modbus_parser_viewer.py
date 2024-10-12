@@ -23,8 +23,7 @@ class ModbusParserViewer(QMainWindow):
         if self.ui.checkBox_pause.isChecked():
             self.raw_text_pause_queue.append(("add", data))
             return
-        hex_list = [f"{b:02X}" for b in data]
-        hex_str = " ".join(hex_list)
+        hex_str = self.bytes_to_hex_str(data)
         # QPlainTextEdit.appendPlainText() will add a newline before the appending text
         self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
         if self.ui.plainTextEdit_Raw.textCursor().positionInBlock() != 0:
@@ -41,3 +40,8 @@ class ModbusParserViewer(QMainWindow):
             match task:
                 case "add":
                     self.add_to_raw(data)
+
+    @staticmethod
+    def bytes_to_hex_str(data: bytes):
+        hex_list = [f"{b:02X}" for b in data]
+        return " ".join(hex_list)
