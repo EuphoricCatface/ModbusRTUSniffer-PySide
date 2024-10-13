@@ -63,17 +63,8 @@ class DeviceValueTable(QWidget):
     def insert_row(self, new_row):
         self.row_dict[new_row] = [None for _ in range(16)]
 
-        rows = sorted(self.row_dict)
-        rows_padded = []
-        prev_row = -1
-        for row in rows:
-            if prev_row + 1 != row:
-                rows_padded.append(-1)
-            rows_padded.append(row)
-        if rows_padded[-1] != 65535:
-            rows_padded.append(-1)
+        table_row = self.quotient_to_table_row(new_row)
 
-        index_new_row = rows_padded.index(new_row)
         prev_exist = (new_row == 0) or ((new_row - 1) in self.row_dict)
         next_exist = (new_row == 65535) or ((new_row + 1) in self.row_dict)
 
@@ -82,19 +73,26 @@ class DeviceValueTable(QWidget):
 
         match (prev_exist, next_exist):
             case (True, True):
-                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, new_row_header)
+                self.ui.tableWidget_main.setVerticalHeaderItem(table_row, new_row_header)
             case (True, False) | (False, True):
-                self.ui.tableWidget_main.insertRow(index_new_row)
-                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, new_row_header)
+                self.ui.tableWidget_main.insertRow(table_row)
+                self.ui.tableWidget_main.setVerticalHeaderItem(table_row, new_row_header)
             case (False, False):
                 dummy_header = QTableWidgetItem()
                 dummy_header.setText("...")
-                self.ui.tableWidget_main.insertRow(index_new_row)
-                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, dummy_header)
-                self.ui.tableWidget_main.insertRow(index_new_row)
-                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, new_row_header)
+                self.ui.tableWidget_main.insertRow(table_row)
+                self.ui.tableWidget_main.setVerticalHeaderItem(table_row, dummy_header)
+                self.ui.tableWidget_main.insertRow(table_row)
+                self.ui.tableWidget_main.setVerticalHeaderItem(table_row, new_row_header)
 
     def create_cell(self, row, column):
+        table_row = self.quotient_to_table_row(row)
+
+        item = QTableWidgetItem()
+        self.ui.tableWidget_main.setItem(table_row, column, item)
+        return item
+
+    def quotient_to_table_row(self, quot):
         rows = sorted(self.row_dict)
         rows_padded = []
         prev_row = -1
@@ -105,8 +103,4 @@ class DeviceValueTable(QWidget):
         if rows_padded[-1] != 65535:
             rows_padded.append(-1)
 
-        row_index = rows_padded.index(row)
-
-        item = QTableWidgetItem()
-        self.ui.tableWidget_main.setItem(row_index, column, item)
-        return item
+        return rows_padded.index(quot)
