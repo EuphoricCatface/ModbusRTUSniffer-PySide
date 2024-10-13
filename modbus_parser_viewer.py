@@ -137,7 +137,10 @@ class ModbusParserViewer(QMainWindow):
             self.ui.pushButton_showPair.setDisabled(True)
             return
 
-        self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
+        if msg.__class__.__name__ == "WriteSingleRegisterRequest":
+            self.ui.plainTextEdit_Parsed.appendPlainText("WriteSingleRegisterRequest (or Response)")
+        else:
+            self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
         self.ui.plainTextEdit_Parsed.appendPlainText(str(msg.__dict__))
 
         self.current_parsed_blk_idx = block_idx
