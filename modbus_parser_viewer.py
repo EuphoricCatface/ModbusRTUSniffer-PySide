@@ -35,12 +35,12 @@ class ModbusParserViewer(QMainWindow):
             return
         hex_str = self.bytes_to_hex_str(data)
         # QPlainTextEdit.appendPlainText() will add a newline before the appending text
-        self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
-        if self.ui.plainTextEdit_Raw.textCursor().positionInBlock() != 0:
-            self.ui.plainTextEdit_Raw.insertPlainText(" ")
-            self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.Right)
-        self.ui.plainTextEdit_Raw.insertPlainText(hex_str)
-        self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
+        t_cursor = self.ui.plainTextEdit_Raw.textCursor()
+        t_cursor.movePosition(QTextCursor.MoveOperation.End)
+        if t_cursor.positionInBlock() != 0:
+            t_cursor.insertText(" ")
+            t_cursor.movePosition(QTextCursor.MoveOperation.Right)
+        t_cursor.insertText(hex_str)
 
     def unpause_handler(self, checked: Qt.CheckState):
         if checked == Qt.CheckState.Checked:
@@ -88,29 +88,27 @@ class ModbusParserViewer(QMainWindow):
 
     def packet_reg_to_raw(self, callback_count, msg, packet, now: datetime.datetime):
         packet_hex = self.bytes_to_hex_str(packet)
-        self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
-        block = self.ui.plainTextEdit_Raw.textCursor().block()
+        t_cursor = self.ui.plainTextEdit_Raw.textCursor()
+        t_cursor.movePosition(QTextCursor.MoveOperation.End)
+        block = t_cursor.block()
         block_text = block.text()
         index_in_block = block_text.rfind(packet_hex)
         global_index = block.position() + index_in_block
         global_index_end = global_index + len(packet_hex)
 
-        t_cursor = self.ui.plainTextEdit_Raw.textCursor()
         t_cursor.setPosition(global_index_end)
         t_cursor.deleteChar()
-        self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
-        self.ui.plainTextEdit_Raw.insertPlainText("\n")
+        t_cursor.insertText("\n")
         t_cursor.setPosition(global_index)
-        self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
         if t_cursor.positionInBlock() != 0:
             t_cursor.deletePreviousChar()
         if t_cursor.positionInBlock() != 0:
-            self.ui.plainTextEdit_Raw.insertPlainText("\n")
+            t_cursor.insertText("\n")
 
-        packet_block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
+        packet_block_idx = t_cursor.block().blockNumber()
         self.callback_count_to_packet_dict[callback_count] = (packet_block_idx, now, msg)
 
-        self.ui.plainTextEdit_Raw.insertPlainText("[" + now.isoformat(' ') + "] ")
+        t_cursor.insertText("[" + now.isoformat(' ') + "] ")
 
     def packet_show_parsed(self, msg):
         self.ui.plainTextEdit_Parsed.clear()
