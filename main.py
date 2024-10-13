@@ -60,8 +60,8 @@ class SerialReaderTest:
 
 def main():
     dotenv.load_dotenv()
-    # reader = SerialReader(
-    reader = SerialReaderTest(
+    # reader = SerialReaderTest(
+    reader = SerialReader(
         os.getenv("PORT"),
         int(os.getenv("BAUDRATE"))
     )
@@ -77,8 +77,8 @@ def main():
             return
         viewer.inject(data)
     timer = QTimer(app)
-    # timer.setInterval(1)
-    timer.setInterval(500)
+    timer.setInterval(1)
+    # timer.setInterval(500)
     timer.timeout.connect(serial_inject)
     timer.start()
 
