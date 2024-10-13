@@ -24,6 +24,8 @@ class ModbusParserViewer(QMainWindow):
         self.device_dict: dict[int, device_value_table.DeviceValueTable] = dict()
         self.block_idx_to_packet_dict = dict()
 
+        self.ui.plainTextEdit_Raw.cursorPositionChanged.connect(self.packet_show_parsed_by_cursor)
+
     def inject(self, data: bytes):
         self.add_to_raw(data)
         self.parser.process_incoming_packet(data)
@@ -113,3 +115,10 @@ class ModbusParserViewer(QMainWindow):
         self.ui.plainTextEdit_Parsed.clear()
         self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
         self.ui.plainTextEdit_Parsed.appendPlainText(str(msg.__dict__))
+
+    def packet_show_parsed_by_cursor(self):
+        if not self.ui.checkBox_pause.isChecked():
+            return
+        block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
+        _, msg = self.block_idx_to_packet_dict[block_idx]
+        self.packet_show_parsed(msg)
