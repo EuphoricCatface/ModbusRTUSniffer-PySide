@@ -52,7 +52,7 @@ class ModbusParserViewer(QMainWindow):
     def unpause_handler(self, checked: Qt.CheckState):
         if checked == Qt.CheckState.Checked:
             return
-        self.ui.pushButton_showPair.setDisabled(True)
+        self.packet_show_parsed(None, -1)
         while self.raw_text_pause_queue:
             # NOTE: packet_show_parsed() will be needlessly called in fast succession. This could be optimized maybe.
             task, data = self.raw_text_pause_queue.popleft()
@@ -122,6 +122,10 @@ class ModbusParserViewer(QMainWindow):
 
     def packet_show_parsed(self, msg, block_idx):
         self.ui.plainTextEdit_Parsed.clear()
+        if msg is None or block_idx == -1:
+            self.ui.pushButton_showPair.setDisabled(True)
+            return
+
         self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
         self.ui.plainTextEdit_Parsed.appendPlainText(str(msg.__dict__))
 
@@ -159,12 +163,8 @@ class ModbusParserViewer(QMainWindow):
         if not self.ui.checkBox_pause.isChecked():
             return
         block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
-        if block_idx not in self.block_idx_to_packet_dict:
-            self.ui.plainTextEdit_Parsed.clear()
-            self.current_parsed_blk_idx = -1
-            self.ui.pushButton_showPair.setDisabled(True)
-            return
-        _, msg, _ = self.block_idx_to_packet_dict[block_idx]
+        msg_with_meta = self.block_idx_to_packet_dict.get(block_idx)
+        msg = msg_with_meta[1] if msg_with_meta is not None else None
         self.packet_show_parsed(msg, block_idx)
 
     def msg_show_handler(self, block_idx):
