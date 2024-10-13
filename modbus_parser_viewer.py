@@ -22,8 +22,7 @@ class ModbusParserViewer(QMainWindow):
         self.raw_text_pause_queue: collections.deque[tuple[str, any]] = collections.deque()
         self.ui.checkBox_pause.checkStateChanged.connect(self.unpause_handler)
         self.device_dict: dict[int, device_value_table.DeviceValueTable] = dict()
-        self.callback_count = 0
-        self.callback_count_to_packet_dict = dict()
+        self.block_idx_to_packet_dict = dict()
 
     def inject(self, data: bytes):
         self.add_to_raw(data)
@@ -67,8 +66,7 @@ class ModbusParserViewer(QMainWindow):
             self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
             return
 
-        self.callback_count += 1
-        self.packet_reg_to_raw(self.callback_count, msg, packet, now)
+        block_idx = self.packet_reg_to_raw(msg, packet, now)
         self.packet_show_parsed(msg)
 
         if type(msg) not in tools.function_table_rw:
@@ -84,9 +82,9 @@ class ModbusParserViewer(QMainWindow):
             self.ui.tabWidget.addTab(tab_page, f"Addr {msg.slave_id}")
             self.device_dict[msg.slave_id] = table
 
-        self.device_dict[msg.slave_id].inject_msg(self.callback_count, msg, now)
+        self.device_dict[msg.slave_id].inject_msg(block_idx, msg, now)
 
-    def packet_reg_to_raw(self, callback_count, msg, packet, now: datetime.datetime):
+    def packet_reg_to_raw(self, msg, packet, now: datetime.datetime):
         packet_hex = self.bytes_to_hex_str(packet)
         t_cursor = self.ui.plainTextEdit_Raw.textCursor()
         t_cursor.movePosition(QTextCursor.MoveOperation.End)
@@ -106,9 +104,10 @@ class ModbusParserViewer(QMainWindow):
             t_cursor.insertText("\n")
 
         packet_block_idx = t_cursor.block().blockNumber()
-        self.callback_count_to_packet_dict[callback_count] = (packet_block_idx, now, msg)
+        self.block_idx_to_packet_dict[packet_block_idx] = (now, msg)
 
         t_cursor.insertText("[" + now.isoformat(' ') + "] ")
+        return packet_block_idx
 
     def packet_show_parsed(self, msg):
         self.ui.plainTextEdit_Parsed.clear()

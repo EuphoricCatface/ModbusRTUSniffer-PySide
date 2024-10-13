@@ -14,7 +14,7 @@ class DeviceValueTable(QWidget):
         self.row_dict: dict[int, list[tuple | None]] = dict()
         self.last_request = None
 
-    def inject_msg(self, callback_count, msg, now):
+    def inject_msg(self, block_idx, msg, now):
         if "Coil" in type(msg).__name__:
             print("Coil operation NYI")
 
@@ -58,7 +58,7 @@ class DeviceValueTable(QWidget):
 
             cell_with_meta = self.row_dict[row][column]
             if cell_with_meta is None:
-                cell_with_meta = self.row_dict[row][column] = (callback_count, self.create_cell(row, column), now)
+                cell_with_meta = self.row_dict[row][column] = (block_idx, self.create_cell(row, column), now)
             cell = cell_with_meta[1]
             cell.setText(str(value))
 
