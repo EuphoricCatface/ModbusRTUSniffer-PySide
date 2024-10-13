@@ -33,7 +33,12 @@ class SerialReaderTest:
         self.test_lines = [
             b"\x01\x03\x01\x31\x00\x01\xD4\x39",  # msg 1
             b"\x01\x03\x02\x2E\x30\xA5\xF0",  # msg 2
-        ]
+            b"\x01\x03\x01",  # msg 1
+            b"\x31\x00\x01",  # msg 1
+            b"\xD4\x39\x01\x03",  # msg 1 / msg 2
+            b"\x02\x2E",  # msg 2
+            b"\x30\xA5\xF0",  # msg 2
+        ]  # TODO: check many packets in one line
 
     def read(self):
         rtn = self.test_lines[self.cur_line]
@@ -63,7 +68,7 @@ def main():
         viewer.inject(data)
     timer = QTimer(app)
     # timer.setInterval(1)
-    timer.setInterval(1000)
+    timer.setInterval(500)
     timer.timeout.connect(serial_inject)
     timer.start()
 
