@@ -45,14 +45,14 @@ class Ui_ModbusParserViewer(object):
 
         self.gridLayout_2.addWidget(self.plainTextEdit_Parsed, 1, 1, 1, 1)
 
-        self.checkBox_pause = QCheckBox(self.tab_raw)
-        self.checkBox_pause.setObjectName(u"checkBox_pause")
-
-        self.gridLayout_2.addWidget(self.checkBox_pause, 0, 0, 1, 1)
-
         self.tabWidget.addTab(self.tab_raw, "")
 
-        self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)
+
+        self.checkBox_pause = QCheckBox(self.centralwidget)
+        self.checkBox_pause.setObjectName(u"checkBox_pause")
+
+        self.gridLayout.addWidget(self.checkBox_pause, 0, 0, 1, 1)
 
         ModbusParserViewer.setCentralWidget(self.centralwidget)
 
@@ -66,7 +66,7 @@ class Ui_ModbusParserViewer(object):
 
     def retranslateUi(self, ModbusParserViewer):
         ModbusParserViewer.setWindowTitle(QCoreApplication.translate("ModbusParserViewer", u"ModbusParserViewer", None))
-        self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_raw), QCoreApplication.translate("ModbusParserViewer", u"Raw Packets", None))
+        self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
     # retranslateUi
 

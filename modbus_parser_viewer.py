@@ -51,7 +51,7 @@ class ModbusParserViewer(QMainWindow):
                 case "add":
                     self.add_to_raw(data)
                 case "packet_reg":
-                    self.packet_reg_to_raw(data[0], data[1], data[2], data[3])
+                    self.packet_register(*data)
 
     @staticmethod
     def bytes_to_hex_str(data: bytes):
@@ -60,12 +60,16 @@ class ModbusParserViewer(QMainWindow):
 
     def parser_callback(self, msg, packet):
         now = datetime.datetime.now()
+        self.packet_register(msg, packet, now)
+
+    def packet_register(self, msg, packet, now):
+        if self.ui.checkBox_pause.isChecked():
+            self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
+            return
 
         self.callback_count += 1
         self.packet_reg_to_raw(self.callback_count, msg, packet, now)
-
-        if not self.ui.checkBox_pause.isChecked():
-            self.packet_show_parsed(msg)
+        self.packet_show_parsed(msg)
 
         if type(msg) not in tools.function_table_rw:
             print("Filtering out message type", type(msg).__name__)
@@ -83,10 +87,6 @@ class ModbusParserViewer(QMainWindow):
         self.device_dict[msg.slave_id].inject_msg(self.callback_count, msg, now)
 
     def packet_reg_to_raw(self, callback_count, msg, packet, now: datetime.datetime):
-        if self.ui.checkBox_pause.isChecked():
-            self.raw_text_pause_queue.append(("packet_reg", (callback_count, msg, packet, now)))
-            return
-
         packet_hex = self.bytes_to_hex_str(packet)
         self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
         block = self.ui.plainTextEdit_Raw.textCursor().block()
