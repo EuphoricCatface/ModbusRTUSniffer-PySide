@@ -1,3 +1,5 @@
+import copy
+
 from pymodbus.factory import ClientDecoder
 from pymodbus.factory import ServerDecoder
 from pymodbus.framer import FramerRTU
@@ -68,12 +70,23 @@ class ModbusParser:
         self.server_framer.processIncomingPacket = \
             lambda *args, **kwargs: processIncomingPacket_mod(self.server_framer, *args, **kwargs)
 
-        self.client_framer_callback = client_framer_callback
-        self.server_framer_callback = server_framer_callback
+        self.client_framer_callback_ = client_framer_callback
+        self.server_framer_callback_ = server_framer_callback
 
     def process_incoming_packet(self, data):
-        self.client_framer.processIncomingPacket(data, self.client_framer_callback)
         self.server_framer.processIncomingPacket(data, self.server_framer_callback)
+        self.client_framer.processIncomingPacket(data, self.client_framer_callback)
+
+    def client_framer_callback(self, *args, **kwargs):
+        # This hopefully makes the parser more stable
+        # I think the problem is that server is not supposed to
+        # see another server giving instructions, and that confuses the server parser.
+        self.server_framer.databuffer = copy.deepcopy(self.client_framer.databuffer)
+        self.client_framer_callback_(*args, **kwargs)
+
+    def server_framer_callback(self, *args, **kwargs):
+        # self.client_framer.databuffer = copy.deepcopy(self.server_framer.databuffer)
+        self.server_framer_callback_(*args, **kwargs)
 
 
 def main():
