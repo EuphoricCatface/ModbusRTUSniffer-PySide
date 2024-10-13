@@ -80,6 +80,8 @@ class ModbusParserViewer(QMainWindow):
             self.ui.tabWidget.addTab(tab_page, f"Addr {msg.slave_id}")
             self.device_dict[msg.slave_id] = table
 
+        self.device_dict[msg.slave_id].inject_msg(self.callback_count, msg, now)
+
     def packet_reg_to_raw(self, callback_count, msg, packet, now: datetime.datetime):
         if self.ui.checkBox_pause.isChecked():
             self.raw_text_pause_queue.append(("packet_reg", (callback_count, msg, packet, now)))
