@@ -119,12 +119,15 @@ class DeviceValueTable(QWidget):
             if prev_row + 1 != row:
                 rows_padded.append(-1)
             rows_padded.append(row)
+            prev_row = row
         if rows_padded[-1] != 65535:
             rows_padded.append(-1)
 
         return rows_padded.index(quot)
 
     def cell_double_click(self, row_on_table, column):
+        if self.ui.tableWidget_main.item(row_on_table, column) is None:
+            return
         row_header = self.ui.tableWidget_main.verticalHeaderItem(row_on_table).text()
         row = int(row_header, 16) // 16
         cell_with_meta = self.row_dict[row][column]

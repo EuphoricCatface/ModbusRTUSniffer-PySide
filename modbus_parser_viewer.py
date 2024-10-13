@@ -37,8 +37,8 @@ class ModbusParserViewer(QMainWindow):
         self.ui.listWidget_addrValue.itemClicked.connect(self.highlight_raw_register_value)
 
     def inject(self, data: bytes):
-        if len(data) > 6:
-            print("viewer: more than 6 bytes at a time! maybe take it slow?")
+        # if len(data) > 6:
+        #     print("viewer: more than 6 bytes at a time! maybe take it slow?")
 
         self.add_to_raw(data)
         while data:

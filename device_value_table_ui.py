@@ -34,8 +34,8 @@ class Ui_DeviceValueTable(object):
         self.gridLayout.addWidget(self.checkBox_sameRegisters, 0, 0, 1, 1)
 
         self.tableWidget_main = QTableWidget(DeviceValueTable)
-        if (self.tableWidget_main.columnCount() < 15):
-            self.tableWidget_main.setColumnCount(15)
+        if (self.tableWidget_main.columnCount() < 17):
+            self.tableWidget_main.setColumnCount(17)
         __qtablewidgetitem = QTableWidgetItem()
         self.tableWidget_main.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
@@ -64,10 +64,14 @@ class Ui_DeviceValueTable(object):
         self.tableWidget_main.setHorizontalHeaderItem(12, __qtablewidgetitem12)
         __qtablewidgetitem13 = QTableWidgetItem()
         self.tableWidget_main.setHorizontalHeaderItem(13, __qtablewidgetitem13)
+        __qtablewidgetitem14 = QTableWidgetItem()
+        self.tableWidget_main.setHorizontalHeaderItem(14, __qtablewidgetitem14)
+        __qtablewidgetitem15 = QTableWidgetItem()
+        self.tableWidget_main.setHorizontalHeaderItem(15, __qtablewidgetitem15)
         if (self.tableWidget_main.rowCount() < 1):
             self.tableWidget_main.setRowCount(1)
-        __qtablewidgetitem14 = QTableWidgetItem()
-        self.tableWidget_main.setVerticalHeaderItem(0, __qtablewidgetitem14)
+        __qtablewidgetitem16 = QTableWidgetItem()
+        self.tableWidget_main.setVerticalHeaderItem(0, __qtablewidgetitem16)
         self.tableWidget_main.setObjectName(u"tableWidget_main")
         self.tableWidget_main.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tableWidget_main.horizontalHeader().setMinimumSectionSize(25)
@@ -110,19 +114,23 @@ class Ui_DeviceValueTable(object):
         ___qtablewidgetitem7 = self.tableWidget_main.horizontalHeaderItem(7)
         ___qtablewidgetitem7.setText(QCoreApplication.translate("DeviceValueTable", u"7", None));
         ___qtablewidgetitem8 = self.tableWidget_main.horizontalHeaderItem(8)
-        ___qtablewidgetitem8.setText(QCoreApplication.translate("DeviceValueTable", u"A", None));
+        ___qtablewidgetitem8.setText(QCoreApplication.translate("DeviceValueTable", u"8", None));
         ___qtablewidgetitem9 = self.tableWidget_main.horizontalHeaderItem(9)
-        ___qtablewidgetitem9.setText(QCoreApplication.translate("DeviceValueTable", u"B", None));
+        ___qtablewidgetitem9.setText(QCoreApplication.translate("DeviceValueTable", u"9", None));
         ___qtablewidgetitem10 = self.tableWidget_main.horizontalHeaderItem(10)
-        ___qtablewidgetitem10.setText(QCoreApplication.translate("DeviceValueTable", u"C", None));
+        ___qtablewidgetitem10.setText(QCoreApplication.translate("DeviceValueTable", u"A", None));
         ___qtablewidgetitem11 = self.tableWidget_main.horizontalHeaderItem(11)
-        ___qtablewidgetitem11.setText(QCoreApplication.translate("DeviceValueTable", u"D", None));
+        ___qtablewidgetitem11.setText(QCoreApplication.translate("DeviceValueTable", u"B", None));
         ___qtablewidgetitem12 = self.tableWidget_main.horizontalHeaderItem(12)
-        ___qtablewidgetitem12.setText(QCoreApplication.translate("DeviceValueTable", u"E", None));
+        ___qtablewidgetitem12.setText(QCoreApplication.translate("DeviceValueTable", u"C", None));
         ___qtablewidgetitem13 = self.tableWidget_main.horizontalHeaderItem(13)
-        ___qtablewidgetitem13.setText(QCoreApplication.translate("DeviceValueTable", u"F", None));
-        ___qtablewidgetitem14 = self.tableWidget_main.verticalHeaderItem(0)
-        ___qtablewidgetitem14.setText(QCoreApplication.translate("DeviceValueTable", u"...", None));
+        ___qtablewidgetitem13.setText(QCoreApplication.translate("DeviceValueTable", u"D", None));
+        ___qtablewidgetitem14 = self.tableWidget_main.horizontalHeaderItem(14)
+        ___qtablewidgetitem14.setText(QCoreApplication.translate("DeviceValueTable", u"E", None));
+        ___qtablewidgetitem15 = self.tableWidget_main.horizontalHeaderItem(15)
+        ___qtablewidgetitem15.setText(QCoreApplication.translate("DeviceValueTable", u"F", None));
+        ___qtablewidgetitem16 = self.tableWidget_main.verticalHeaderItem(0)
+        ___qtablewidgetitem16.setText(QCoreApplication.translate("DeviceValueTable", u"...", None));
         self.checkBox_sameRW.setText(QCoreApplication.translate("DeviceValueTable", u"Read/write are the same", None))
     # retranslateUi
 

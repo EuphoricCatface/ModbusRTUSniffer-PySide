@@ -91,6 +91,16 @@
      </column>
      <column>
       <property name="text">
+       <string>8</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>9</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>A</string>
       </property>
      </column>
