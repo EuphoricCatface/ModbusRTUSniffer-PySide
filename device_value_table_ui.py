@@ -15,8 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QHeaderView,
-    QSizePolicy, QTableWidget, QTableWidgetItem, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QGridLayout,
+    QHeaderView, QSizePolicy, QTableWidget, QTableWidgetItem,
+    QWidget)
 
 class Ui_DeviceValueTable(object):
     def setupUi(self, DeviceValueTable):
@@ -68,6 +69,7 @@ class Ui_DeviceValueTable(object):
         __qtablewidgetitem14 = QTableWidgetItem()
         self.tableWidget_main.setVerticalHeaderItem(0, __qtablewidgetitem14)
         self.tableWidget_main.setObjectName(u"tableWidget_main")
+        self.tableWidget_main.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tableWidget_main.horizontalHeader().setMinimumSectionSize(25)
         self.tableWidget_main.horizontalHeader().setDefaultSectionSize(50)
         self.tableWidget_main.verticalHeader().setMinimumSectionSize(15)

@@ -29,6 +29,9 @@
    </item>
    <item row="1" column="0" colspan="2">
     <widget class="QTableWidget" name="tableWidget_main">
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+     </property>
      <attribute name="horizontalHeaderMinimumSectionSize">
       <number>25</number>
      </attribute>
