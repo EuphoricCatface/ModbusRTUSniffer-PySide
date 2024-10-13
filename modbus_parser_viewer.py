@@ -24,6 +24,9 @@ class ModbusParserViewer(QMainWindow):
         self.device_dict: dict[int, device_value_table.DeviceValueTable] = dict()
         self.block_idx_to_packet_dict = dict()
 
+        self.res_req_dict = dict()
+        self.last_req = None
+
         self.ui.plainTextEdit_Raw.cursorPositionChanged.connect(self.packet_show_parsed_by_cursor)
 
     def inject(self, data: bytes):
@@ -71,6 +74,8 @@ class ModbusParserViewer(QMainWindow):
 
         block_idx = self.packet_reg_to_raw(msg, packet, now)
         self.packet_show_parsed(msg)
+
+        self.pair_req_res(msg, block_idx)
 
         if type(msg) not in tools.function_table_rw:
             print("Filtering out message type", type(msg).__name__)
@@ -137,3 +142,22 @@ class ModbusParserViewer(QMainWindow):
         # packet_show_parsed() will naturally be called because of the cursorPositionChanged signal.
         t_cursor.movePosition(QTextCursor.MoveOperation.EndOfBlock, QTextCursor.MoveMode.KeepAnchor)
         self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
+
+    def pair_req_res(self, msg, block_idx):
+        # A bit of parsing here, so that we can tell associated addresses later
+        if type(msg).__name__.endswith("Request"):
+            self.last_req = (msg, block_idx)
+            return
+        if not type(msg).__name__.endswith("Response"):
+            return
+        if self.last_req is None
+            return
+
+        req, req_block_idx = self.last_req
+        self.last_req = None
+        if type(req).__name__[:-7] != type(msg).__name__[:-8]:
+            return
+
+        pair = (req, msg)
+        self.res_req_dict[req_block_idx] = block_idx
+        self.res_req_dict[block_idx] = req_block_idx
