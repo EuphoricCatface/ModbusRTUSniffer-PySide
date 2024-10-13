@@ -173,7 +173,7 @@ class ModbusParserViewer(QMainWindow):
 
         for offset, value in enumerate(values):
             self.ui.listWidget_addrValue.addItem(
-                f"0x{addr + offset:04X} = {value}"
+                f"0x{addr + offset:04X} = {value} ({value:04X})"
             )
 
     def packet_show_parsed_by_cursor(self):
