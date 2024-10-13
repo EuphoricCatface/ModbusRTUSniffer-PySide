@@ -16,7 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QMainWindow,
-    QPlainTextEdit, QSizePolicy, QTabWidget, QWidget)
+    QPlainTextEdit, QPushButton, QSizePolicy, QTabWidget,
+    QWidget)
 
 class Ui_ModbusParserViewer(object):
     def setupUi(self, ModbusParserViewer):
@@ -45,6 +46,12 @@ class Ui_ModbusParserViewer(object):
 
         self.gridLayout_2.addWidget(self.plainTextEdit_Parsed, 1, 1, 1, 1)
 
+        self.pushButton_showPair = QPushButton(self.tab_raw)
+        self.pushButton_showPair.setObjectName(u"pushButton_showPair")
+        self.pushButton_showPair.setEnabled(False)
+
+        self.gridLayout_2.addWidget(self.pushButton_showPair, 2, 1, 1, 1)
+
         self.tabWidget.addTab(self.tab_raw, "")
 
         self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)
@@ -66,6 +73,7 @@ class Ui_ModbusParserViewer(object):
 
     def retranslateUi(self, ModbusParserViewer):
         ModbusParserViewer.setWindowTitle(QCoreApplication.translate("ModbusParserViewer", u"ModbusParserViewer", None))
+        self.pushButton_showPair.setText(QCoreApplication.translate("ModbusParserViewer", u"Show Corresponding Pair", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_raw), QCoreApplication.translate("ModbusParserViewer", u"Raw Packets", None))
         self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
     # retranslateUi

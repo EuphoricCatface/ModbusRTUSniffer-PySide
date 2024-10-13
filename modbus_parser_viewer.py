@@ -28,6 +28,9 @@ class ModbusParserViewer(QMainWindow):
         self.last_req = None
 
         self.ui.plainTextEdit_Raw.cursorPositionChanged.connect(self.packet_show_parsed_by_cursor)
+        self.current_parsed_blk_idx = -1
+
+        self.ui.pushButton_showPair.pressed.connect(self.show_pair)
 
     def inject(self, data: bytes):
         self.add_to_raw(data)
@@ -49,6 +52,7 @@ class ModbusParserViewer(QMainWindow):
     def unpause_handler(self, checked: Qt.CheckState):
         if checked == Qt.CheckState.Checked:
             return
+        self.ui.pushButton_showPair.setDisabled(True)
         while self.raw_text_pause_queue:
             # NOTE: packet_show_parsed() will be needlessly called in fast succession. This could be optimized maybe.
             task, data = self.raw_text_pause_queue.popleft()
@@ -73,7 +77,7 @@ class ModbusParserViewer(QMainWindow):
             return
 
         block_idx = self.packet_reg_to_raw(msg, packet, now)
-        self.packet_show_parsed(msg)
+        self.packet_show_parsed(msg, block_idx)
 
         self.pair_req_res(msg, block_idx)
 
@@ -117,10 +121,14 @@ class ModbusParserViewer(QMainWindow):
         t_cursor.insertText("[" + now.time().isoformat() + "] ")
         return packet_block_idx
 
-    def packet_show_parsed(self, msg):
+    def packet_show_parsed(self, msg, block_idx):
         self.ui.plainTextEdit_Parsed.clear()
         self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
         self.ui.plainTextEdit_Parsed.appendPlainText(str(msg.__dict__))
+
+        self.current_parsed_blk_idx = block_idx
+        if self.ui.checkBox_pause.isChecked():
+            self.ui.pushButton_showPair.setEnabled(block_idx in self.res_req_dict)
 
     def packet_show_parsed_by_cursor(self):
         if not self.ui.checkBox_pause.isChecked():
@@ -128,9 +136,11 @@ class ModbusParserViewer(QMainWindow):
         block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
         if block_idx not in self.block_idx_to_packet_dict:
             self.ui.plainTextEdit_Parsed.clear()
+            self.current_parsed_blk_idx = -1
+            self.ui.pushButton_showPair.setDisabled(True)
             return
         _, msg, _ = self.block_idx_to_packet_dict[block_idx]
-        self.packet_show_parsed(msg)
+        self.packet_show_parsed(msg, block_idx)
 
     def msg_show_handler(self, block_idx):
         self.ui.checkBox_pause.setChecked(True)
@@ -150,7 +160,7 @@ class ModbusParserViewer(QMainWindow):
             return
         if not type(msg).__name__.endswith("Response"):
             return
-        if self.last_req is None
+        if self.last_req is None:
             return
 
         req, req_block_idx = self.last_req
@@ -161,3 +171,9 @@ class ModbusParserViewer(QMainWindow):
         pair = (req, msg)
         self.res_req_dict[req_block_idx] = block_idx
         self.res_req_dict[block_idx] = req_block_idx
+
+    def show_pair(self):
+        opposite_idx = self.res_req_dict.get(self.current_parsed_blk_idx)
+        if opposite_idx is None:
+            return
+        self.msg_show_handler(opposite_idx)
