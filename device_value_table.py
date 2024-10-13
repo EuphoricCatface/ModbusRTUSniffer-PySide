@@ -1,6 +1,6 @@
 import collections
 
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QTableWidgetItem
 
 from device_value_table_ui import Ui_DeviceValueTable
 
@@ -11,8 +11,7 @@ class DeviceValueTable(QWidget):
         self.ui = Ui_DeviceValueTable()
         self.ui.setupUi(self)
 
-        self.row_dict: collections.defaultdict[int, list[int | None]]\
-            = collections.defaultdict(lambda: [None for _ in range(16)])
+        self.row_dict: dict[int, list[tuple | None]] = dict()
         self.last_request = None
 
     def inject_msg(self, callback_count, msg, now):
@@ -37,6 +36,7 @@ class DeviceValueTable(QWidget):
 
         request = self.last_request
         response = msg
+        self.last_request = None
 
         address = request.address
         values: list[int] = []
@@ -48,10 +48,67 @@ class DeviceValueTable(QWidget):
             case "WriteMultipleRegistersResponse":
                 values = request.values
 
-        print(address, values)
-
         for offset, value in enumerate(values):
             cell_addr = address + offset
             row = cell_addr // 16
             column = cell_addr % 16
-            self.row_dict[row][column] = value
+
+            if row not in self.row_dict:
+                self.insert_row(row)
+
+            cell_with_meta = self.row_dict[row][column]
+            if cell_with_meta is None:
+                cell_with_meta = self.row_dict[row][column] = (callback_count, self.create_cell(row, column), now)
+            cell = cell_with_meta[1]
+            cell.setText(str(value))
+
+    def insert_row(self, new_row):
+        self.row_dict[new_row] = [None for _ in range(16)]
+
+        rows = sorted(self.row_dict)
+        rows_padded = []
+        prev_row = -1
+        for row in rows:
+            if prev_row + 1 != row:
+                rows_padded.append(-1)
+            rows_padded.append(row)
+        if rows_padded[-1] != 65535:
+            rows_padded.append(-1)
+
+        index_new_row = rows_padded.index(new_row)
+        prev_exist = (new_row == 0) or ((new_row - 1) in self.row_dict)
+        next_exist = (new_row == 65535) or ((new_row + 1) in self.row_dict)
+
+        new_row_header = QTableWidgetItem()
+        new_row_header.setText(f"{new_row * 16:04X}")
+
+        match (prev_exist, next_exist):
+            case (True, True):
+                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, new_row_header)
+            case (True, False) | (False, True):
+                self.ui.tableWidget_main.insertRow(index_new_row)
+                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, new_row_header)
+            case (False, False):
+                dummy_header = QTableWidgetItem()
+                dummy_header.setText("...")
+                self.ui.tableWidget_main.insertRow(index_new_row)
+                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, dummy_header)
+                self.ui.tableWidget_main.insertRow(index_new_row)
+                self.ui.tableWidget_main.setVerticalHeaderItem(index_new_row, new_row_header)
+
+    def create_cell(self, row, column):
+        rows = sorted(self.row_dict)
+        rows_padded = []
+        prev_row = -1
+        for row in rows:
+            if prev_row + 1 != row:
+                rows_padded.append(-1)
+            rows_padded.append(row)
+        if rows_padded[-1] != 65535:
+            rows_padded.append(-1)
+
+        row_index = rows_padded.index(row)
+
+        item = QTableWidgetItem()
+        self.ui.tableWidget_main.setItem(row_index, column, item)
+        return item
