@@ -82,6 +82,7 @@ class ModbusParserViewer(QMainWindow):
             tab_page_layout.addChildWidget(table)
             self.ui.tabWidget.addTab(tab_page, f"Addr {msg.slave_id}")
             self.device_dict[msg.slave_id] = table
+            table.msg_show_req.connect(lambda a: print(a))
 
         self.device_dict[msg.slave_id].inject_msg(block_idx, msg, now)
 

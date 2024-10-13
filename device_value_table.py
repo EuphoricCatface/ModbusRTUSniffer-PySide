@@ -1,15 +1,20 @@
 from PySide6.QtWidgets import QWidget, QTableWidgetItem
+from PySide6.QtCore import Signal
 
 from device_value_table_ui import Ui_DeviceValueTable
 
 
 class DeviceValueTable(QWidget):
+    msg_show_req = Signal(int)
+
     def __init__(self, parent):
         super().__init__(parent=parent)
         self.ui = Ui_DeviceValueTable()
         self.ui.setupUi(self)
 
-        self.row_dict: dict[int, list[tuple | None]] = dict()
+        self.ui.tableWidget_main.cellDoubleClicked.connect(self.cell_double_click)
+
+        self.row_dict: dict[int, list[list | None]] = dict()
         self.last_request = None
 
     def inject_msg(self, block_idx, msg, now):
@@ -56,7 +61,8 @@ class DeviceValueTable(QWidget):
 
             cell_with_meta = self.row_dict[row][column]
             if cell_with_meta is None:
-                cell_with_meta = self.row_dict[row][column] = (block_idx, self.create_cell(row, column), now)
+                cell_with_meta = self.row_dict[row][column] = [block_idx, self.create_cell(row, column), now]
+            cell_with_meta[0] = block_idx
             cell = cell_with_meta[1]
             cell.setText(str(value))
 
@@ -104,3 +110,10 @@ class DeviceValueTable(QWidget):
             rows_padded.append(-1)
 
         return rows_padded.index(quot)
+
+    def cell_double_click(self, row_on_table, column):
+        row_header = self.ui.tableWidget_main.verticalHeaderItem(row_on_table).text()
+        row = int(row_header, 16) // 16
+        cell_with_meta = self.row_dict[row][column]
+        block_idx = cell_with_meta[0]
+        self.msg_show_req.emit(block_idx)
