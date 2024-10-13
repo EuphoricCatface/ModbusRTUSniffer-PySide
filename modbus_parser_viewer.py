@@ -134,4 +134,5 @@ class ModbusParserViewer(QMainWindow):
         t_cursor = self.ui.plainTextEdit_Raw.textCursor()
         t_cursor.setPosition(t_cursor_idx)
         # packet_show_parsed() will naturally be called because of the cursorPositionChanged signal.
+        t_cursor.movePosition(QTextCursor.MoveOperation.EndOfBlock, QTextCursor.MoveMode.KeepAnchor)
         self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
