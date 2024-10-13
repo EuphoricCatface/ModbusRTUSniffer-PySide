@@ -52,17 +52,21 @@ class Ui_DeviceValueTable(object):
         __qtablewidgetitem7 = QTableWidgetItem()
         self.tableWidget_main.setHorizontalHeaderItem(7, __qtablewidgetitem7)
         __qtablewidgetitem8 = QTableWidgetItem()
-        self.tableWidget_main.setHorizontalHeaderItem(9, __qtablewidgetitem8)
+        self.tableWidget_main.setHorizontalHeaderItem(8, __qtablewidgetitem8)
         __qtablewidgetitem9 = QTableWidgetItem()
-        self.tableWidget_main.setHorizontalHeaderItem(10, __qtablewidgetitem9)
+        self.tableWidget_main.setHorizontalHeaderItem(9, __qtablewidgetitem9)
         __qtablewidgetitem10 = QTableWidgetItem()
-        self.tableWidget_main.setHorizontalHeaderItem(11, __qtablewidgetitem10)
+        self.tableWidget_main.setHorizontalHeaderItem(10, __qtablewidgetitem10)
         __qtablewidgetitem11 = QTableWidgetItem()
-        self.tableWidget_main.setHorizontalHeaderItem(12, __qtablewidgetitem11)
+        self.tableWidget_main.setHorizontalHeaderItem(11, __qtablewidgetitem11)
         __qtablewidgetitem12 = QTableWidgetItem()
-        self.tableWidget_main.setHorizontalHeaderItem(13, __qtablewidgetitem12)
+        self.tableWidget_main.setHorizontalHeaderItem(12, __qtablewidgetitem12)
         __qtablewidgetitem13 = QTableWidgetItem()
-        self.tableWidget_main.setHorizontalHeaderItem(14, __qtablewidgetitem13)
+        self.tableWidget_main.setHorizontalHeaderItem(13, __qtablewidgetitem13)
+        if (self.tableWidget_main.rowCount() < 1):
+            self.tableWidget_main.setRowCount(1)
+        __qtablewidgetitem14 = QTableWidgetItem()
+        self.tableWidget_main.setVerticalHeaderItem(0, __qtablewidgetitem14)
         self.tableWidget_main.setObjectName(u"tableWidget_main")
         self.tableWidget_main.horizontalHeader().setMinimumSectionSize(25)
         self.tableWidget_main.horizontalHeader().setDefaultSectionSize(50)
@@ -103,18 +107,20 @@ class Ui_DeviceValueTable(object):
         ___qtablewidgetitem6.setText(QCoreApplication.translate("DeviceValueTable", u"6", None));
         ___qtablewidgetitem7 = self.tableWidget_main.horizontalHeaderItem(7)
         ___qtablewidgetitem7.setText(QCoreApplication.translate("DeviceValueTable", u"7", None));
-        ___qtablewidgetitem8 = self.tableWidget_main.horizontalHeaderItem(9)
+        ___qtablewidgetitem8 = self.tableWidget_main.horizontalHeaderItem(8)
         ___qtablewidgetitem8.setText(QCoreApplication.translate("DeviceValueTable", u"A", None));
-        ___qtablewidgetitem9 = self.tableWidget_main.horizontalHeaderItem(10)
+        ___qtablewidgetitem9 = self.tableWidget_main.horizontalHeaderItem(9)
         ___qtablewidgetitem9.setText(QCoreApplication.translate("DeviceValueTable", u"B", None));
-        ___qtablewidgetitem10 = self.tableWidget_main.horizontalHeaderItem(11)
+        ___qtablewidgetitem10 = self.tableWidget_main.horizontalHeaderItem(10)
         ___qtablewidgetitem10.setText(QCoreApplication.translate("DeviceValueTable", u"C", None));
-        ___qtablewidgetitem11 = self.tableWidget_main.horizontalHeaderItem(12)
+        ___qtablewidgetitem11 = self.tableWidget_main.horizontalHeaderItem(11)
         ___qtablewidgetitem11.setText(QCoreApplication.translate("DeviceValueTable", u"D", None));
-        ___qtablewidgetitem12 = self.tableWidget_main.horizontalHeaderItem(13)
+        ___qtablewidgetitem12 = self.tableWidget_main.horizontalHeaderItem(12)
         ___qtablewidgetitem12.setText(QCoreApplication.translate("DeviceValueTable", u"E", None));
-        ___qtablewidgetitem13 = self.tableWidget_main.horizontalHeaderItem(14)
+        ___qtablewidgetitem13 = self.tableWidget_main.horizontalHeaderItem(13)
         ___qtablewidgetitem13.setText(QCoreApplication.translate("DeviceValueTable", u"F", None));
+        ___qtablewidgetitem14 = self.tableWidget_main.verticalHeaderItem(0)
+        ___qtablewidgetitem14.setText(QCoreApplication.translate("DeviceValueTable", u"...", None));
         self.checkBox_sameRW.setText(QCoreApplication.translate("DeviceValueTable", u"Read/write are the same", None))
     # retranslateUi
 
