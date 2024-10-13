@@ -38,7 +38,7 @@ class SerialReaderTest:
         #     b"\xD4\x39\x01\x03",  # msg 1 / msg 2
         #     b"\x02\x2E",  # msg 2
         #     b"\x30\xA5\xF0",  # msg 2
-        # ]  # TODO: check many packets in one line
+        # ]
         self.test_lines = [
             b"\x01\x03\x01\x31\x00\x02\x94\x38",
             b"\x01\x03\x04\x30\x31\x32\x33\xF1\x89",  # ReadHoldingRegisters (3)
