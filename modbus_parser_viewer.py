@@ -1,7 +1,7 @@
 import datetime
 import collections
 
-from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout
+from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidgetItem
 from PySide6.QtGui import QTextCursor
 from PySide6.QtCore import Qt
 
@@ -29,8 +29,12 @@ class ModbusParserViewer(QMainWindow):
 
         self.ui.plainTextEdit_Raw.cursorPositionChanged.connect(self.packet_show_parsed_by_cursor)
         self.current_parsed_blk_idx = -1
+        self.current_parsed_packet_type = type(None)
+        self.pause_by_cursor = False
 
         self.ui.pushButton_showPair.pressed.connect(self.show_pair)
+
+        self.ui.listWidget_addrValue.itemClicked.connect(self.highlight_raw_register_value)
 
     def inject(self, data: bytes):
         self.add_to_raw(data)
@@ -134,6 +138,8 @@ class ModbusParserViewer(QMainWindow):
         if self.ui.checkBox_pause.isChecked():
             self.ui.pushButton_showPair.setEnabled(block_idx in self.res_req_dict)
 
+        self.current_parsed_packet_type = type(msg)
+
         if type(msg).__name__ not in [
             "ReadHoldingRegistersResponse", "ReadInputRegistersResponse",
             "WriteSingleRegisterRequest", "WriteMultipleRegistersRequest"
@@ -162,6 +168,8 @@ class ModbusParserViewer(QMainWindow):
 
     def packet_show_parsed_by_cursor(self):
         if not self.ui.checkBox_pause.isChecked():
+            return
+        if self.pause_by_cursor:
             return
         block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
         msg_with_meta = self.block_idx_to_packet_dict.get(block_idx)
@@ -194,7 +202,6 @@ class ModbusParserViewer(QMainWindow):
         if type(req).__name__[:-7] != type(msg).__name__[:-8]:
             return
 
-        pair = (req, msg)
         self.res_req_dict[req_block_idx] = block_idx
         self.res_req_dict[block_idx] = req_block_idx
 
@@ -203,3 +210,23 @@ class ModbusParserViewer(QMainWindow):
         if opposite_idx is None:
             return
         self.msg_show_handler(opposite_idx)
+
+    def highlight_raw_register_value(self, item: QListWidgetItem):
+        index = self.ui.listWidget_addrValue.row(item)
+        base_offset = {
+            "ReadHoldingRegistersResponse": 27,
+            "ReadInputRegistersResponse": 27,
+            "WriteSingleRegisterRequest": 30,
+            "WriteMultipleRegistersRequest": 39
+        }
+        stride = 6
+        width = 5
+
+        self.pause_by_cursor = True
+        then, msg, block = self.block_idx_to_packet_dict[self.current_parsed_blk_idx]
+        t_cursor_idx = block.position()
+        t_cursor = self.ui.plainTextEdit_Raw.textCursor()
+        t_cursor.setPosition(t_cursor_idx + base_offset[type(msg).__name__] + stride * index)
+        t_cursor.movePosition(QTextCursor.MoveOperation.Right, QTextCursor.MoveMode.KeepAnchor, n=width)
+        self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
+        self.pause_by_cursor = False
