@@ -77,9 +77,8 @@ class ModbusParserViewer(QMainWindow):
             return
 
         block_idx = self.packet_reg_to_raw(msg, packet, now)
-        self.packet_show_parsed(msg, block_idx)
-
         self.pair_req_res(msg, block_idx)
+        self.packet_show_parsed(msg, block_idx)
 
         if type(msg) not in tools.function_table_rw:
             print("Filtering out message type", type(msg).__name__)
@@ -129,6 +128,32 @@ class ModbusParserViewer(QMainWindow):
         self.current_parsed_blk_idx = block_idx
         if self.ui.checkBox_pause.isChecked():
             self.ui.pushButton_showPair.setEnabled(block_idx in self.res_req_dict)
+
+        if type(msg).__name__ not in [
+            "ReadHoldingRegistersResponse", "ReadInputRegistersResponse",
+            "WriteSingleRegisterRequest", "WriteMultipleRegistersRequest"
+        ]:
+            return
+
+        self.ui.plainTextEdit_Parsed.appendPlainText("")
+        if type(msg).__name__ in ["WriteMultipleRegistersRequest"]:
+            addr = msg.address
+            values = msg.values
+        elif type(msg).__name__ in ["WriteSingleRegisterRequest"]:
+            addr = msg.address
+            values = [msg.value]
+        else:
+            req_idx = self.res_req_dict.get(block_idx)
+            if req_idx is None:
+                self.ui.plainTextEdit_Parsed.appendPlainText("Corresponding request packet not found")
+            req = self.block_idx_to_packet_dict[req_idx][1]
+            addr = req.address
+            values = msg.registers
+
+        for offset, value in enumerate(values):
+            self.ui.plainTextEdit_Parsed.appendPlainText(
+                f"0x{addr + offset:04X} = {value}"
+            )
 
     def packet_show_parsed_by_cursor(self):
         if not self.ui.checkBox_pause.isChecked():
