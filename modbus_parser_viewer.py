@@ -80,6 +80,10 @@ class ModbusParserViewer(QMainWindow):
             self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
             return
 
+        if type(msg).__name__ == "WriteSingleRegisterResponse":
+            # Workaround
+            return
+
         block_idx = self.packet_reg_to_raw(msg, packet, now)
         self.pair_req_res(msg, block_idx)
         self.packet_show_parsed(msg, block_idx)
@@ -106,6 +110,8 @@ class ModbusParserViewer(QMainWindow):
         block = t_cursor.block()
         block_text = block.text()
         index_in_block = block_text.rfind(packet_hex)
+        if index_in_block == -1:
+            print("WARNING: search fail in the last block of RAW!")
         global_index = block.position() + index_in_block
         global_index_end = global_index + len(packet_hex)
 

@@ -30,7 +30,7 @@ class DeviceValueTable(QWidget):
             return
 
         if type(self.last_request[0]).__name__[:-7] != type(msg).__name__[:-8]:
-            print("Request - response type mismatch")
+            print("Request - response type mismatch", self.last_request[0], msg)
             return
 
         if msg.isError():

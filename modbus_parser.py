@@ -73,19 +73,27 @@ class ModbusParser:
         self.client_framer_callback_ = client_framer_callback
         self.server_framer_callback_ = server_framer_callback
 
+        self.server_made_it = False
+        self.client_made_it = False
+
     def process_incoming_packet(self, data):
         self.server_framer.processIncomingPacket(data, self.server_framer_callback)
         self.client_framer.processIncomingPacket(data, self.client_framer_callback)
 
+        if self.client_made_it:
+            self.server_framer.databuffer = copy.deepcopy(self.client_framer.databuffer)
+            self.client_made_it = False
+
+        if self.server_made_it:
+            self.client_framer.databuffer = copy.deepcopy(self.server_framer.databuffer)
+            self.server_made_it = False
+
     def client_framer_callback(self, *args, **kwargs):
-        # This hopefully makes the parser more stable
-        # I think the problem is that server is not supposed to
-        # see another server giving instructions, and that confuses the server parser.
-        self.server_framer.databuffer = copy.deepcopy(self.client_framer.databuffer)
+        self.client_made_it = True
         self.client_framer_callback_(*args, **kwargs)
 
     def server_framer_callback(self, *args, **kwargs):
-        # self.client_framer.databuffer = copy.deepcopy(self.server_framer.databuffer)
+        self.server_made_it = True
         self.server_framer_callback_(*args, **kwargs)
 
 
