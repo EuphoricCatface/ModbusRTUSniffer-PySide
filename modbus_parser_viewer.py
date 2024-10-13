@@ -82,7 +82,7 @@ class ModbusParserViewer(QMainWindow):
             tab_page_layout.addChildWidget(table)
             self.ui.tabWidget.addTab(tab_page, f"Addr {msg.slave_id}")
             self.device_dict[msg.slave_id] = table
-            table.msg_show_req.connect(lambda a: print(a))
+            table.msg_show_req.connect(self.msg_show_handler)
 
         self.device_dict[msg.slave_id].inject_msg(block_idx, msg, now)
 
@@ -106,7 +106,7 @@ class ModbusParserViewer(QMainWindow):
             t_cursor.insertText("\n")
 
         packet_block_idx = t_cursor.block().blockNumber()
-        self.block_idx_to_packet_dict[packet_block_idx] = (now, msg)
+        self.block_idx_to_packet_dict[packet_block_idx] = (now, msg, block)
 
         t_cursor.insertText("[" + now.isoformat(' ') + "] ")
         return packet_block_idx
@@ -120,5 +120,18 @@ class ModbusParserViewer(QMainWindow):
         if not self.ui.checkBox_pause.isChecked():
             return
         block_idx = self.ui.plainTextEdit_Raw.textCursor().block().blockNumber()
-        _, msg = self.block_idx_to_packet_dict[block_idx]
+        if block_idx not in self.block_idx_to_packet_dict:
+            self.ui.plainTextEdit_Parsed.clear()
+            return
+        _, msg, _ = self.block_idx_to_packet_dict[block_idx]
         self.packet_show_parsed(msg)
+
+    def msg_show_handler(self, block_idx):
+        self.ui.checkBox_pause.setChecked(True)
+        self.ui.tabWidget.setCurrentIndex(0)
+        then, msg, block = self.block_idx_to_packet_dict[block_idx]
+        t_cursor_idx = block.position()
+        t_cursor = self.ui.plainTextEdit_Raw.textCursor()
+        t_cursor.setPosition(t_cursor_idx)
+        # packet_show_parsed() will naturally be called because of the cursorPositionChanged signal.
+        self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
