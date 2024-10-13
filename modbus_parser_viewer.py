@@ -108,7 +108,7 @@ class ModbusParserViewer(QMainWindow):
         packet_block_idx = t_cursor.block().blockNumber()
         self.block_idx_to_packet_dict[packet_block_idx] = (now, msg, block)
 
-        t_cursor.insertText("[" + now.isoformat(' ') + "] ")
+        t_cursor.insertText("[" + now.time().isoformat() + "] ")
         return packet_block_idx
 
     def packet_show_parsed(self, msg):
