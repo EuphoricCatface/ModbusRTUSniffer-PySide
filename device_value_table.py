@@ -1,5 +1,3 @@
-import collections
-
 from PySide6.QtWidgets import QWidget, QTableWidgetItem
 
 from device_value_table_ui import Ui_DeviceValueTable
