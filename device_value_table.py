@@ -22,14 +22,14 @@ class DeviceValueTable(QWidget):
             print("Coil operation NYI")
 
         if type(msg).__name__.endswith("Request"):
-            self.last_request = msg
+            self.last_request = (msg, block_idx)
             return
 
         if self.last_request is None:
             print("A response has arrived without a previous request")
             return
 
-        if type(self.last_request).__name__[:-7] != type(msg).__name__[:-8]:
+        if type(self.last_request[0]).__name__[:-7] != type(msg).__name__[:-8]:
             print("Request - response type mismatch")
             return
 
@@ -37,7 +37,7 @@ class DeviceValueTable(QWidget):
             print("Response is error")
             return
 
-        request = self.last_request
+        request, req_idx = self.last_request
         response = msg
         self.last_request = None
 
@@ -48,8 +48,10 @@ class DeviceValueTable(QWidget):
                 values = response.registers
             case "WriteSingleRegisterResponse":
                 values = [request.value]
+                block_idx = req_idx
             case "WriteMultipleRegistersResponse":
                 values = request.values
+                block_idx = req_idx
 
         for offset, value in enumerate(values):
             cell_addr = address + offset
