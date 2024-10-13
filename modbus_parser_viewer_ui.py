@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QMainWindow,
-    QPlainTextEdit, QPushButton, QSizePolicy, QTabWidget,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QListWidget,
+    QListWidgetItem, QMainWindow, QPlainTextEdit, QPushButton,
+    QSizePolicy, QTabWidget, QWidget)
 
 class Ui_ModbusParserViewer(object):
     def setupUi(self, ModbusParserViewer):
@@ -34,12 +34,6 @@ class Ui_ModbusParserViewer(object):
         self.tab_raw.setObjectName(u"tab_raw")
         self.gridLayout_2 = QGridLayout(self.tab_raw)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.plainTextEdit_Raw = QPlainTextEdit(self.tab_raw)
-        self.plainTextEdit_Raw.setObjectName(u"plainTextEdit_Raw")
-        self.plainTextEdit_Raw.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByKeyboard|Qt.TextInteractionFlag.TextSelectableByMouse)
-
-        self.gridLayout_2.addWidget(self.plainTextEdit_Raw, 1, 0, 1, 1)
-
         self.plainTextEdit_Parsed = QPlainTextEdit(self.tab_raw)
         self.plainTextEdit_Parsed.setObjectName(u"plainTextEdit_Parsed")
         self.plainTextEdit_Parsed.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByKeyboard|Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -50,7 +44,18 @@ class Ui_ModbusParserViewer(object):
         self.pushButton_showPair.setObjectName(u"pushButton_showPair")
         self.pushButton_showPair.setEnabled(False)
 
-        self.gridLayout_2.addWidget(self.pushButton_showPair, 2, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.pushButton_showPair, 3, 1, 1, 1)
+
+        self.listWidget_addrValue = QListWidget(self.tab_raw)
+        self.listWidget_addrValue.setObjectName(u"listWidget_addrValue")
+
+        self.gridLayout_2.addWidget(self.listWidget_addrValue, 2, 1, 1, 1)
+
+        self.plainTextEdit_Raw = QPlainTextEdit(self.tab_raw)
+        self.plainTextEdit_Raw.setObjectName(u"plainTextEdit_Raw")
+        self.plainTextEdit_Raw.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByKeyboard|Qt.TextInteractionFlag.TextSelectableByMouse)
+
+        self.gridLayout_2.addWidget(self.plainTextEdit_Raw, 1, 0, 2, 1)
 
         self.tabWidget.addTab(self.tab_raw, "")
 

@@ -122,6 +122,7 @@ class ModbusParserViewer(QMainWindow):
 
     def packet_show_parsed(self, msg, block_idx):
         self.ui.plainTextEdit_Parsed.clear()
+        self.ui.listWidget_addrValue.clear()
         if msg is None or block_idx == -1:
             self.ui.pushButton_showPair.setDisabled(True)
             return
@@ -139,7 +140,6 @@ class ModbusParserViewer(QMainWindow):
         ]:
             return
 
-        self.ui.plainTextEdit_Parsed.appendPlainText("")
         if type(msg).__name__ in ["WriteMultipleRegistersRequest"]:
             addr = msg.address
             values = msg.values
@@ -149,13 +149,14 @@ class ModbusParserViewer(QMainWindow):
         else:
             req_idx = self.res_req_dict.get(block_idx)
             if req_idx is None:
-                self.ui.plainTextEdit_Parsed.appendPlainText("Corresponding request packet not found")
+                self.ui.listWidget_addrValue.addItem("Corresponding request packet not found")
+                return
             req = self.block_idx_to_packet_dict[req_idx][1]
             addr = req.address
             values = msg.registers
 
         for offset, value in enumerate(values):
-            self.ui.plainTextEdit_Parsed.appendPlainText(
+            self.ui.listWidget_addrValue.addItem(
                 f"0x{addr + offset:04X} = {value}"
             )
 
