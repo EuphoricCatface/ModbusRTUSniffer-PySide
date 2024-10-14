@@ -40,8 +40,8 @@ class ModbusParserViewer(QMainWindow):
         # if len(data) > 6:
         #     print("viewer: more than 6 bytes at a time! maybe take it slow?")
 
-        self.add_to_raw(data)
         while data:
+            self.add_to_raw(data[:6])
             self.parser.process_incoming_packet(data[:6])
             data = data[6:]
 
