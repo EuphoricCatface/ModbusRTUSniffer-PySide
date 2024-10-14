@@ -88,11 +88,11 @@ class ModbusParser:
             self.client_framer.databuffer = copy.deepcopy(self.server_framer.databuffer)
             self.server_made_it = False
 
-    def client_framer_callback(self, *args, **kwargs):
+    def client_framer_callback(self, *args, **kwargs):  # Response
         self.client_made_it = True
         self.client_framer_callback_(*args, **kwargs)
 
-    def server_framer_callback(self, *args, **kwargs):
+    def server_framer_callback(self, *args, **kwargs):  # Request
         self.server_made_it = True
         self.server_framer_callback_(*args, **kwargs)
 
