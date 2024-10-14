@@ -89,7 +89,10 @@ class DeviceValueTable(QWidget):
 
             cell_with_meta = self.row_dict[row][column]
             if cell_with_meta is None:
-                cell_with_meta = self.row_dict[row][column] = [block_idx, self.create_cell(row, column), now]
+                cell = ColorFadeItem()
+                table_row = self.quotient_to_table_row(row)
+                self.ui.tableWidget_main.setItem(table_row, column, cell)
+                cell_with_meta = self.row_dict[row][column] = [block_idx, cell, now]
             cell_with_meta[0] = block_idx
             cell = cell_with_meta[1]
             if type(response).__name__.startswith("Write"):
@@ -122,13 +125,6 @@ class DeviceValueTable(QWidget):
                 self.ui.tableWidget_main.setVerticalHeaderItem(table_row, dummy_header)
                 self.ui.tableWidget_main.insertRow(table_row)
                 self.ui.tableWidget_main.setVerticalHeaderItem(table_row, new_row_header)
-
-    def create_cell(self, row, column):
-        table_row = self.quotient_to_table_row(row)
-
-        item = ColorFadeItem()
-        self.ui.tableWidget_main.setItem(table_row, column, item)
-        return item
 
     def quotient_to_table_row(self, quot):
         rows = sorted(self.row_dict)
