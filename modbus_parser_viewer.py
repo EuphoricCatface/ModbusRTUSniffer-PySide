@@ -58,6 +58,9 @@ class ModbusParserViewer(QMainWindow):
             t_cursor.movePosition(QTextCursor.MoveOperation.Right)
         t_cursor.insertText(hex_str)
 
+        # keep tracking to the end
+        self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
+
     def unpause_handler(self, checked: Qt.CheckState):
         if checked == Qt.CheckState.Checked:
             return
@@ -134,6 +137,10 @@ class ModbusParserViewer(QMainWindow):
         self.block_idx_to_packet_dict[packet_block_idx] = (now, msg, block)
 
         t_cursor.insertText("[" + now.time().isoformat() + "] ")
+
+        # keep tracking to the end
+        self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
+
         return packet_block_idx
 
     def packet_show_parsed(self, msg, block_idx):
