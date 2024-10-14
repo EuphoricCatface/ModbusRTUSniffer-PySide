@@ -34,8 +34,8 @@ class Ui_DeviceValueTable(object):
         self.gridLayout.addWidget(self.checkBox_sameRegisters, 0, 0, 1, 1)
 
         self.tableWidget_main = QTableWidget(DeviceValueTable)
-        if (self.tableWidget_main.columnCount() < 17):
-            self.tableWidget_main.setColumnCount(17)
+        if (self.tableWidget_main.columnCount() < 16):
+            self.tableWidget_main.setColumnCount(16)
         __qtablewidgetitem = QTableWidgetItem()
         self.tableWidget_main.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
