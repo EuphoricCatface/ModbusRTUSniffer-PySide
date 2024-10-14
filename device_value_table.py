@@ -1,3 +1,5 @@
+import datetime
+
 from PySide6.QtWidgets import QWidget, QTableWidgetItem
 from PySide6.QtCore import Signal, QVariantAnimation, QEasingCurve
 from PySide6.QtGui import QColor
@@ -15,6 +17,9 @@ class ColorFadeItem(QTableWidgetItem):
         self.animation.setEndValue(1.0)
         self.animation.setDuration(10000)
         self.animation.setEasingCurve(QEasingCurve.Type.OutExpo)
+
+        self.block_idx = -1
+        self.update_time = datetime.datetime.fromtimestamp(0)
 
     def color_mix(self, value):
         gr = self.start_color
@@ -40,7 +45,7 @@ class DeviceValueTable(QWidget):
 
         self.ui.tableWidget_main.cellDoubleClicked.connect(self.cell_double_click)
 
-        self.row_dict: dict[int, list[list | None]] = dict()
+        self.row_dict: dict[int, list[ColorFadeItem | None]] = dict()
         self.last_request = None
 
     def inject_msg(self, block_idx, msg, now):
@@ -87,14 +92,14 @@ class DeviceValueTable(QWidget):
             if row not in self.row_dict:
                 self.insert_row(row)
 
-            cell_with_meta = self.row_dict[row][column]
-            if cell_with_meta is None:
+            cell = self.row_dict[row][column]
+            if cell is None:
                 cell = ColorFadeItem()
                 table_row = self.quotient_to_table_row(row)
                 self.ui.tableWidget_main.setItem(table_row, column, cell)
-                cell_with_meta = self.row_dict[row][column] = [block_idx, cell, now]
-            cell_with_meta[0] = block_idx
-            cell = cell_with_meta[1]
+                self.row_dict[row][column] = cell
+            cell.block_idx = block_idx
+            cell.update_time = now
             if type(response).__name__.startswith("Write"):
                 cell.start_color = QColor("#FF0000")
             elif type(response).__name__.startswith("Read"):
@@ -141,10 +146,6 @@ class DeviceValueTable(QWidget):
         return rows_padded.index(quot)
 
     def cell_double_click(self, row_on_table, column):
-        if self.ui.tableWidget_main.item(row_on_table, column) is None:
+        if (cell := self.ui.tableWidget_main.item(row_on_table, column)) is None:
             return
-        row_header = self.ui.tableWidget_main.verticalHeaderItem(row_on_table).text()
-        row = int(row_header, 16) // 16
-        cell_with_meta = self.row_dict[row][column]
-        block_idx = cell_with_meta[0]
-        self.msg_show_req.emit(block_idx)
+        self.msg_show_req.emit(cell.block_idx)
