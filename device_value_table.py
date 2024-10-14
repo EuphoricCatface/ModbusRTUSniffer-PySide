@@ -1,7 +1,33 @@
 from PySide6.QtWidgets import QWidget, QTableWidgetItem
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QVariantAnimation, QEasingCurve
+from PySide6.QtGui import QColor
 
 from device_value_table_ui import Ui_DeviceValueTable
+
+
+class ColorFadeItem(QTableWidgetItem):
+    def __init__(self):
+        super().__init__()
+        self.start_color = QColor("#00FF00")
+        self.animation = QVariantAnimation(None)
+        self.animation.valueChanged.connect(self.color_mix)
+        self.animation.setStartValue(0.0)
+        self.animation.setEndValue(1.0)
+        self.animation.setDuration(10000)
+        self.animation.setEasingCurve(QEasingCurve.Type.OutExpo)
+
+    def color_mix(self, value):
+        gr = self.start_color
+        wh = QColor("#FFFFFF")
+        r = gr.red() * (1 - value) + wh.red() * value
+        g = gr.green() * (1 - value) + wh.green() * value
+        b = gr.blue() * (1 - value) + wh.blue() * value
+        self.setBackground(QColor(r, g, b))
+
+    def setText(self, text):
+        super().setText(text)
+        self.animation.stop()
+        self.animation.start()
 
 
 class DeviceValueTable(QWidget):
@@ -96,7 +122,7 @@ class DeviceValueTable(QWidget):
     def create_cell(self, row, column):
         table_row = self.quotient_to_table_row(row)
 
-        item = QTableWidgetItem()
+        item = ColorFadeItem()
         self.ui.tableWidget_main.setItem(table_row, column, item)
         return item
 
