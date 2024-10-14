@@ -88,8 +88,8 @@ class ModbusParserViewer(QMainWindow):
             self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
             return
 
-        if type(msg).__name__ == "WriteSingleRegisterResponse":
-            # Workaround
+        if type(msg).__name__ in ["WriteSingleRegisterResponse", "IllegalFunctionRequest"]:
+            print("Filtering out message type from ANY processing", type(msg).__name__)
             return
 
         block_idx = self.packet_reg_to_raw(msg, packet, now)
@@ -97,7 +97,7 @@ class ModbusParserViewer(QMainWindow):
         self.packet_show_parsed(msg, block_idx)
 
         if type(msg) not in tools.function_table_rw:
-            print("Filtering out message type", type(msg).__name__)
+            print("Filtering out message type from parsing", type(msg).__name__)
             return
 
         if msg.slave_id not in self.device_dict:
@@ -120,7 +120,7 @@ class ModbusParserViewer(QMainWindow):
         block_text = block.text()
         index_in_block = block_text.rfind(packet_hex)
         if index_in_block == -1:
-            print("WARNING: search fail in the last block of RAW!")
+            print("WARNING: search fail in the last block of RAW!", type(msg).__name__, "|", packet_hex)
         global_index = block.position() + index_in_block
         global_index_end = global_index + len(packet_hex)
 
