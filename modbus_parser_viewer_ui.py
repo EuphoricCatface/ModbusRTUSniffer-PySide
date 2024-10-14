@@ -57,6 +57,12 @@ class Ui_ModbusParserViewer(object):
 
         self.gridLayout_2.addWidget(self.plainTextEdit_Raw, 1, 0, 2, 1)
 
+        self.checkBox_scrollEnd = QCheckBox(self.tab_raw)
+        self.checkBox_scrollEnd.setObjectName(u"checkBox_scrollEnd")
+        self.checkBox_scrollEnd.setChecked(True)
+
+        self.gridLayout_2.addWidget(self.checkBox_scrollEnd, 3, 0, 1, 1)
+
         self.tabWidget.addTab(self.tab_raw, "")
 
         self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)
@@ -79,6 +85,7 @@ class Ui_ModbusParserViewer(object):
     def retranslateUi(self, ModbusParserViewer):
         ModbusParserViewer.setWindowTitle(QCoreApplication.translate("ModbusParserViewer", u"ModbusParserViewer", None))
         self.pushButton_showPair.setText(QCoreApplication.translate("ModbusParserViewer", u"Show Corresponding Pair", None))
+        self.checkBox_scrollEnd.setText(QCoreApplication.translate("ModbusParserViewer", u"Scroll to End", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_raw), QCoreApplication.translate("ModbusParserViewer", u"Raw Packets", None))
         self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
     # retranslateUi
