@@ -88,7 +88,7 @@ class ModbusParserViewer(QMainWindow):
             self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
             return
 
-        if type(msg).__name__ in ["WriteSingleRegisterResponse", "IllegalFunctionRequest"]:
+        if type(msg).__name__ in ["IllegalFunctionRequest"]:
             print("Filtering out message type from ANY processing", type(msg).__name__)
             return
 
@@ -150,10 +150,7 @@ class ModbusParserViewer(QMainWindow):
             self.ui.pushButton_showPair.setDisabled(True)
             return
 
-        if msg.__class__.__name__ == "WriteSingleRegisterRequest":
-            self.ui.plainTextEdit_Parsed.appendPlainText("WriteSingleRegisterRequest (or Response)")
-        else:
-            self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
+        self.ui.plainTextEdit_Parsed.appendPlainText(msg.__class__.__name__)
         self.ui.plainTextEdit_Parsed.appendPlainText(str(msg.__dict__))
 
         self.current_parsed_blk_idx = block_idx
@@ -164,14 +161,15 @@ class ModbusParserViewer(QMainWindow):
 
         if type(msg).__name__ not in [
             "ReadHoldingRegistersResponse", "ReadInputRegistersResponse",
-            "WriteSingleRegisterRequest", "WriteMultipleRegistersRequest"
+            "WriteSingleRegisterRequest", "WriteSingleRegisterResponse",
+            "WriteMultipleRegistersRequest"
         ]:
             return
 
         if type(msg).__name__ in ["WriteMultipleRegistersRequest"]:
             addr = msg.address
             values = msg.values
-        elif type(msg).__name__ in ["WriteSingleRegisterRequest"]:
+        elif type(msg).__name__ in ["WriteSingleRegisterRequest", "WriteSingleRegisterResponse"]:
             addr = msg.address
             values = [msg.value]
         else:
@@ -239,6 +237,7 @@ class ModbusParserViewer(QMainWindow):
             "ReadHoldingRegistersResponse": 27,
             "ReadInputRegistersResponse": 27,
             "WriteSingleRegisterRequest": 30,
+            "WriteSingleRegisterResponse": 30,
             "WriteMultipleRegistersRequest": 39
         }
         stride = 6

@@ -76,6 +76,9 @@ class ModbusParser:
         self.server_made_it = False
         self.client_made_it = False
 
+        self.writesingleregisterrequest_detected = False
+        self.writesingleregisterresponse_expected = False
+
     def process_incoming_packet(self, data):
         self.server_framer.processIncomingPacket(data, self.server_framer_callback)
         self.client_framer.processIncomingPacket(data, self.client_framer_callback)
@@ -88,13 +91,29 @@ class ModbusParser:
             self.client_framer.databuffer = copy.deepcopy(self.server_framer.databuffer)
             self.server_made_it = False
 
+        if self.writesingleregisterrequest_detected:
+            self.writesingleregisterresponse_expected = True
+            self.writesingleregisterrequest_detected = False
+
     def client_framer_callback(self, *args, **kwargs):  # Response
+        if (type(kwargs["msg"]).__name__ == "WriteSingleRegisterResponse"
+                and not self.writesingleregisterresponse_expected):
+            return
+
         self.client_made_it = True
         self.client_framer_callback_(*args, **kwargs)
+        self.writesingleregisterresponse_expected = False
 
     def server_framer_callback(self, *args, **kwargs):  # Request
+        if type(kwargs["msg"]).__name__ == "WriteSingleRegisterRequest":
+            if self.writesingleregisterresponse_expected:
+                return
+            else:
+                self.writesingleregisterrequest_detected = True
+
         self.server_made_it = True
         self.server_framer_callback_(*args, **kwargs)
+        self.writesingleregisterresponse_expected = False
 
 
 def main():

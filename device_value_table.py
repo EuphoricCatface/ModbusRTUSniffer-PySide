@@ -22,31 +22,20 @@ class DeviceValueTable(QWidget):
             print("Coil operation NYI")
 
         if type(msg).__name__.endswith("Request"):
-            if (type(msg).__name__ == "WriteSingleRegisterRequest" and
-                    self.last_request is not None and
-                    type(self.last_request[0]).__name__ == "WriteSingleRegisterRequest"):
-                pass
-            else:
-                self.last_request = (msg, block_idx)
-                return
+            self.last_request = (msg, block_idx)
+            return
 
         if self.last_request is None:
             print("A response has arrived without a previous request")
             return
 
         if type(self.last_request[0]).__name__[:-7] != type(msg).__name__[:-8]:
-            if type(msg).__name__ == "WriteSingleRegisterRequest":
-                pass
-            else:
-                print("Request - response type mismatch", self.last_request[0], msg)
-                return
+            print("Request - response type mismatch", self.last_request[0], msg)
+            return
 
-        if type(msg).__name__ == "WriteSingleRegisterRequest":
-            pass
-        else:
-            if msg.isError():
-                print("Response is error")
-                return
+        if msg.isError():
+            print("Response is error")
+            return
 
         request, req_idx = self.last_request
         response = msg
@@ -57,7 +46,7 @@ class DeviceValueTable(QWidget):
         match type(response).__name__:
             case "ReadHoldingRegistersResponse" | "ReadInputRegistersResponse":
                 values = response.registers
-            case "WriteSingleRegisterRequest":  # NOT WriteSingleRegisterResponse - WORKAROUND!
+            case "WriteSingleRegisterResponse":
                 values = [request.value]
                 block_idx = req_idx
             case "WriteMultipleRegistersResponse":
