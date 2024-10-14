@@ -53,6 +53,8 @@ class DeviceValueTable(QWidget):
             print("Coil operation NYI")
 
         if type(msg).__name__.endswith("Request"):
+            if self.last_request is not None:
+                print("A request has arrived right after another request")
             self.last_request = (msg, block_idx)
             return
 
