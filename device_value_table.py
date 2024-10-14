@@ -92,6 +92,10 @@ class DeviceValueTable(QWidget):
                 cell_with_meta = self.row_dict[row][column] = [block_idx, self.create_cell(row, column), now]
             cell_with_meta[0] = block_idx
             cell = cell_with_meta[1]
+            if type(response).__name__.startswith("Write"):
+                cell.start_color = QColor("#FF0000")
+            elif type(response).__name__.startswith("Read"):
+                cell.start_color = QColor("#00FF00")
             cell.setText(str(value))
 
     def insert_row(self, new_row):
