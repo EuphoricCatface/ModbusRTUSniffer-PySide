@@ -73,9 +73,13 @@ class ModbusParser:
         self.client_framer_callback_ = client_framer_callback
         self.server_framer_callback_ = server_framer_callback
 
+        # The framers often get confused after a while, especially the client framer.
+        # Each databuffer is manually snipped when the other framer finds a packet.
         self.server_made_it = False
         self.client_made_it = False
 
+        # WriteSingleRegister(Request/Response) are exactly the same.
+        # We need to assume the first one will be the request and the next will be response.
         self.writesingleregisterrequest_detected = False
         self.writesingleregisterresponse_expected = False
 
