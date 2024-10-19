@@ -43,7 +43,7 @@ class DeviceValueTable(QWidget):
         self.ui = Ui_DeviceValueTable()
         self.ui.setupUi(self)
 
-        self.ui.tableWidget_main.cellDoubleClicked.connect(self.cell_double_click)
+        self.ui.tableWidget_main.itemDoubleClicked.connect(self.item_double_click)
 
         self.row_dict: dict[int, list[ColorFadeItem | None]] = dict()
         self.last_request = None
@@ -147,7 +147,5 @@ class DeviceValueTable(QWidget):
 
         return rows_padded.index(quot)
 
-    def cell_double_click(self, row_on_table, column):
-        if (cell := self.ui.tableWidget_main.item(row_on_table, column)) is None:
-            return
-        self.msg_show_req.emit(cell.block_idx)
+    def item_double_click(self, item):
+        self.msg_show_req.emit(item.block_idx)
