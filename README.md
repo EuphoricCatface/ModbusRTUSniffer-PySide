@@ -62,6 +62,7 @@ for a while, try restarting the program.
 
 ## TODO
 * Raw stream logging
+* Serial exception handling
 * Breakpoint on value read/write/change
 * Support for separate holding/input registers
 * Support for separate values on read/write operations
