@@ -69,7 +69,7 @@
     <item row="0" column="0">
      <widget class="QCheckBox" name="checkBox_pause">
       <property name="text">
-       <string>Pause</string>
+       <string>Pause UI Updates</string>
       </property>
      </widget>
     </item>

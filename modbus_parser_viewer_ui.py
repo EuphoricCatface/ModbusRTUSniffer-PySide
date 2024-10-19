@@ -87,6 +87,6 @@ class Ui_ModbusParserViewer(object):
         self.pushButton_showPair.setText(QCoreApplication.translate("ModbusParserViewer", u"Show Corresponding Pair", None))
         self.checkBox_scrollEnd.setText(QCoreApplication.translate("ModbusParserViewer", u"Scroll to End", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_raw), QCoreApplication.translate("ModbusParserViewer", u"Raw Packets", None))
-        self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
+        self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause UI Updates", None))
     # retranslateUi
 
