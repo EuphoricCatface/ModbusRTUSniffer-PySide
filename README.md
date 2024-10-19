@@ -63,6 +63,7 @@ for a while, try restarting the program.
 ## TODO
 * Raw stream logging
 * Selecting the port, starting/stopping the parsing in the GUI
+* Breakpoint on value read/write/change
 * Support for separate holding/input registers
 * Support for separate values on read/write operations
 * Support for bit operations
