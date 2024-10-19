@@ -19,13 +19,13 @@ class ModbusParserViewer(QMainWindow):
         self.ui.setupUi(self)
 
         self.parser = modbus_parser.ModbusParser(self.parser_callback, self.parser_callback)
-        self.raw_text_pause_queue: collections.deque[tuple[str, any]] = collections.deque()
-        self.ui.checkBox_pause.checkStateChanged.connect(self.unpause_handler)
+
         self.device_dict: dict[int, device_value_table.DeviceValueTable] = dict()
         self.block_idx_to_packet_dict = dict()
 
-        self.res_req_dict = dict()
-        self.last_req = None
+        self.ui.checkBox_pause.checkStateChanged.connect(self.unpause_handler)
+        self.ui.checkBox_pause.checkStateChanged.connect(self.pause_to_scrollEnd)
+        self.raw_text_pause_queue: collections.deque[tuple[str, any]] = collections.deque()
 
         self.ui.plainTextEdit_Raw.cursorPositionChanged.connect(self.packet_show_parsed_by_cursor)
         self.current_parsed_blk_idx = -1
@@ -33,10 +33,10 @@ class ModbusParserViewer(QMainWindow):
         self.sub_packet_highlighting = False
 
         self.ui.pushButton_showPair.pressed.connect(self.show_pair)
+        self.res_req_dict = dict()
+        self.last_req = None
 
         self.ui.listWidget_addrValue.itemClicked.connect(self.highlight_raw_register_value)
-
-        self.ui.checkBox_pause.checkStateChanged.connect(self.pause_to_scrollEnd)
 
     def inject(self, data: bytes):
         while data:
@@ -74,6 +74,13 @@ class ModbusParserViewer(QMainWindow):
                     self.add_to_raw(data)
                 case "packet_reg":
                     self.packet_register(*data)
+
+    def pause_to_scrollEnd(self, checked):
+        if checked == Qt.CheckState.Unchecked:
+            self.ui.checkBox_scrollEnd.setEnabled(True)
+        if checked == Qt.CheckState.Checked:
+            self.ui.checkBox_scrollEnd.setChecked(False)
+            self.ui.checkBox_scrollEnd.setEnabled(False)
 
     @staticmethod
     def bytes_to_hex_str(data: bytes):
@@ -256,10 +263,3 @@ class ModbusParserViewer(QMainWindow):
         t_cursor.movePosition(QTextCursor.MoveOperation.Right, QTextCursor.MoveMode.KeepAnchor, n=width)
         self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
         self.sub_packet_highlighting = False
-
-    def pause_to_scrollEnd(self, checked):
-        if checked == Qt.CheckState.Unchecked:
-            self.ui.checkBox_scrollEnd.setEnabled(True)
-        if checked == Qt.CheckState.Checked:
-            self.ui.checkBox_scrollEnd.setChecked(False)
-            self.ui.checkBox_scrollEnd.setEnabled(False)
