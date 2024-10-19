@@ -25,10 +25,7 @@ class SerialReader:
 
 
 class SerialReaderTest:
-    def __init__(self, port: str, baudrate: int):
-        self.port = port
-        self.baudrate = baudrate
-
+    def __init__(self):
         self.cur_line = 0
         # self.test_lines = [
         #     b"\x01\x03\x01\x31\x00\x01\xD4\x39",  # msg 1
@@ -60,11 +57,13 @@ class SerialReaderTest:
 
 def main():
     dotenv.load_dotenv()
-    # reader = SerialReaderTest(
-    reader = SerialReader(
-        os.getenv("PORT"),
-        int(os.getenv("BAUDRATE"))
-    )
+    if os.getenv("TEST_SERIAL") == "1":
+        reader = SerialReaderTest()
+    else:
+        reader = SerialReader(
+            os.getenv("PORT"),
+            int(os.getenv("BAUDRATE"))
+        )
 
     app = QApplication(sys.argv)
 
@@ -77,8 +76,10 @@ def main():
             return
         viewer.inject(data)
     timer = QTimer(app)
-    timer.setInterval(1)
-    # timer.setInterval(500)
+    if os.getenv("TEST_SERIAL") == "1":
+        timer.setInterval(500)
+    else:
+        timer.setInterval(1)
     timer.timeout.connect(serial_inject)
     timer.start()
 
