@@ -139,13 +139,26 @@
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QCheckBox" name="checkBox_scrollEnd">
-          <property name="text">
-           <string>Scroll to End</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
+         <widget class="QWidget" name="widget_2" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QCheckBox" name="checkBox_scrollEnd">
+             <property name="text">
+              <string>Scroll to End</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_saveRaw">
+             <property name="text">
+              <string>Save Raw Data</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>

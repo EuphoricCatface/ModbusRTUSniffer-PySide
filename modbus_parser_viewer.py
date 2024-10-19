@@ -3,7 +3,7 @@ import collections
 import typing
 import os
 
-from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidgetItem
+from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidgetItem, QFileDialog
 from PySide6.QtGui import QTextCursor, QIntValidator
 from PySide6.QtCore import QTimer
 
@@ -34,11 +34,11 @@ class ModbusParserViewer(QMainWindow):
         self.block_idx_to_packet_dict = dict()
 
         self.ui.lineEdit_baudrate.setValidator(QIntValidator(0, 999999))
-        self.ui.pushButton_start.toggled.connect(self.read_start)
+        self.ui.pushButton_start.clicked.connect(self.read_start)
         self.ui.pushButton_pause.toggled.connect(self.unpause_handler)
         self.ui.pushButton_pause.toggled.connect(self.pause_to_scrollEnd)
         self.raw_text_pause_queue: collections.deque[tuple[str, any]] = collections.deque()
-        self.ui.pushButton_stop.toggled.connect(self.read_stop)
+        self.ui.pushButton_stop.clicked.connect(self.read_stop)
 
         self.ui.plainTextEdit_Raw.cursorPositionChanged.connect(self.packet_show_parsed_by_cursor)
         self.current_parsed_blk_idx = -1
@@ -51,9 +51,10 @@ class ModbusParserViewer(QMainWindow):
 
         self.ui.listWidget_addrValue.itemClicked.connect(self.highlight_raw_register_value)
 
-    def read_start(self, checked):
-        if not checked:
-            return
+        self.raw_data = bytearray()
+        self.ui.pushButton_saveRaw.pressed.connect(self.save_raw)
+
+    def read_start(self):
         self.ui.pushButton_pause.setEnabled(True)
 
         if self.serial_reader is None:
@@ -67,9 +68,7 @@ class ModbusParserViewer(QMainWindow):
 
         self.reader_timer.start()
 
-    def read_stop(self, checked):
-        if not checked:
-            return
+    def read_stop(self):
         self.ui.pushButton_pause.setDisabled(True)
         self.reader_timer.stop()
         self.serial_reader.close()
@@ -92,6 +91,7 @@ class ModbusParserViewer(QMainWindow):
 
     def inject(self):
         data = self.serial_reader.read()
+        self.raw_data.extend(data)
         while data:
             # The program is built on an assumption that only one packet gets found in one processing.
             # 6 is the length of a shortest possible modbus RTU packet.
@@ -316,3 +316,10 @@ class ModbusParserViewer(QMainWindow):
         t_cursor.movePosition(QTextCursor.MoveOperation.Right, QTextCursor.MoveMode.KeepAnchor, n=width)
         self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
         self.sub_packet_highlighting = False
+
+    def save_raw(self):
+        filename, _filter = QFileDialog.getSaveFileName(self, "Save Raw Data", filter="Raw Data (*.raw)")
+        if not filename.endswith(".raw") and "." not in os.path.basename(filename):
+            filename += ".raw"
+        with open(filename, mode="wb") as fp:
+            fp.write(self.raw_data)

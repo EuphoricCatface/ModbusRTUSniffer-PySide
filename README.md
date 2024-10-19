@@ -61,7 +61,7 @@ This program is not guaranteed to always succeed on sniffing. If you find the pr
 for a while, try restarting the program.
 
 ## TODO
-* Raw stream logging
+* Importing raw data
 * Serial exception handling
 * Breakpoint on value read/write/change
 * Support for separate holding/input registers
