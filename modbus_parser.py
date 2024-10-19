@@ -7,18 +7,6 @@ from pymodbus.framer import FramerRTU
 from pymodbus.exceptions import ModbusIOException
 
 
-def print_msg_client(msg, packet):
-    print("client framer:")
-    print(packet)
-    print(type(msg).__name__, msg.__dict__)
-
-
-def print_msg_server(msg, **kwargs):
-    print("server framer:")
-    print(kwargs.get("packet", None))
-    print(type(msg).__name__, msg.__dict__)
-
-
 def processIncomingPacket_mod(self: FramerRTU, data: bytes, callback, tid=None):
     """Process new packet pattern.
 
@@ -121,6 +109,16 @@ class ModbusParser:
 
 
 def main():
+    def print_msg_client(msg, packet):
+        print("client framer:")
+        print(packet)
+        print(type(msg).__name__, msg.__dict__)
+
+    def print_msg_server(msg, **kwargs):
+        print("server framer:")
+        print(kwargs.get("packet", None))
+        print(type(msg).__name__, msg.__dict__)
+
     parser = ModbusParser(print_msg_client, print_msg_server)
 
     test_stream = [
