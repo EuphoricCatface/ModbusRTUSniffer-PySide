@@ -105,6 +105,7 @@ class ModbusParserViewer(QMainWindow):
             return
 
         if msg.slave_id not in self.device_dict:
+            # FIXME: Somehow the table widget will not fill the tab...
             tab_page = QWidget()
             table = device_value_table.DeviceValueTable(tab_page)
             tab_page_layout = QGridLayout(tab_page)
