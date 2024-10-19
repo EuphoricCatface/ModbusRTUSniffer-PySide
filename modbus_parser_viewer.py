@@ -68,7 +68,6 @@ class ModbusParserViewer(QMainWindow):
             return
         self.packet_show_parsed(None, -1)
         while self.raw_text_pause_queue:
-            # NOTE: packet_show_parsed() will be needlessly called in fast succession. This could be optimized maybe.
             task, data = self.raw_text_pause_queue.popleft()
             match task:
                 case "add":
