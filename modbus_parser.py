@@ -67,7 +67,7 @@ class ModbusParser:
         self.client_made_it = False
 
         # WriteSingleRegister(Request/Response) are exactly the same.
-        # We need to assume the first one will be the request and the next will be response.
+        # We need to assume the first one must be the request and the next must be response.
         self.writesingleregisterrequest_detected = False
         self.writesingleregisterresponse_expected = False
 
