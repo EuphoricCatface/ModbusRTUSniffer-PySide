@@ -71,6 +71,16 @@ class ModbusParser:
         self.writesingleregisterrequest_detected = False
         self.writesingleregisterresponse_expected = False
 
+    def clear(self):
+        self.server_framer.databuffer = b''
+        self.client_framer.databuffer = b''
+
+        self.server_made_it = False
+        self.client_made_it = False
+
+        self.writesingleregisterrequest_detected = False
+        self.writesingleregisterresponse_expected = False
+
     def process_incoming_packet(self, data):
         self.server_framer.processIncomingPacket(data, self.server_framer_callback)
         self.client_framer.processIncomingPacket(data, self.client_framer_callback)

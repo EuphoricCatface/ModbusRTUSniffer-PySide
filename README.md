@@ -27,12 +27,15 @@ BAUDRATE=38400
 $ PORT="/dev/ttyUSB0" BAUDRATE=38400 python ./main.py
 ```
 
-The sniffing will start as soon as the program runs.
-
 If you want to test this program without actually connecting to a serial device, you can add `TEST_SERIAL=1` to the
 environment variables.
 
 ## UI
+Above the tabs, you can input port name and baudrate, and select `Start` to start the sniffing.
+`Pause` will stop updating the UI, so you can observe the states at that moment.
+(Parsing will still be running in the background, so that the timestamps showing up after unpause remains accurate)
+`Stop` will disconnect you from the serial connection, and delete all data collected in the program.
+
 ### Raw Packets
 On the main `Raw Packets` page, the raw bytes will show up on the left side. When a packet is detected, the packet
 will have its own line, along with the time when the detection occurred.
@@ -53,16 +56,12 @@ with colors, green for reading and red for writing, decaying as time goes.
 
 Double-clicking on a cell will take you to the `Raw Packets` page, highlighting the packet that updated the cell.
 
-Ticking the `Pause UI Updates` checkbox will stop updating the UI, so you can observe the states at that moment.
-(Parsing will still be running in the background, so that the timestamps showing up after unpause remains accurate) 
-
 ## Disclaimer
 This program is not guaranteed to always succeed on sniffing. If you find the program not finding any packets
 for a while, try restarting the program.
 
 ## TODO
 * Raw stream logging
-* Selecting the port, starting/stopping the parsing in the GUI
 * Breakpoint on value read/write/change
 * Support for separate holding/input registers
 * Support for separate values on read/write operations

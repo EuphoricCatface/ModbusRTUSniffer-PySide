@@ -15,7 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QListWidget,
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QGridLayout,
+    QHBoxLayout, QLabel, QLineEdit, QListWidget,
     QListWidgetItem, QMainWindow, QPlainTextEdit, QPushButton,
     QSizePolicy, QTabWidget, QWidget)
 
@@ -28,6 +29,64 @@ class Ui_ModbusParserViewer(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.widget = QWidget(self.centralwidget)
+        self.widget.setObjectName(u"widget")
+        self.horizontalLayout_2 = QHBoxLayout(self.widget)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label = QLabel(self.widget)
+        self.label.setObjectName(u"label")
+
+        self.horizontalLayout_2.addWidget(self.label)
+
+        self.lineEdit_port = QLineEdit(self.widget)
+        self.lineEdit_port.setObjectName(u"lineEdit_port")
+
+        self.horizontalLayout_2.addWidget(self.lineEdit_port)
+
+        self.label_2 = QLabel(self.widget)
+        self.label_2.setObjectName(u"label_2")
+
+        self.horizontalLayout_2.addWidget(self.label_2)
+
+        self.lineEdit_baudrate = QLineEdit(self.widget)
+        self.lineEdit_baudrate.setObjectName(u"lineEdit_baudrate")
+
+        self.horizontalLayout_2.addWidget(self.lineEdit_baudrate)
+
+        self.pushButton_start = QPushButton(self.widget)
+        self.buttonGroup = QButtonGroup(ModbusParserViewer)
+        self.buttonGroup.setObjectName(u"buttonGroup")
+        self.buttonGroup.addButton(self.pushButton_start)
+        self.pushButton_start.setObjectName(u"pushButton_start")
+        icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+        self.pushButton_start.setIcon(icon)
+        self.pushButton_start.setCheckable(True)
+
+        self.horizontalLayout_2.addWidget(self.pushButton_start)
+
+        self.pushButton_pause = QPushButton(self.widget)
+        self.buttonGroup.addButton(self.pushButton_pause)
+        self.pushButton_pause.setObjectName(u"pushButton_pause")
+        self.pushButton_pause.setEnabled(False)
+        icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackPause))
+        self.pushButton_pause.setIcon(icon1)
+        self.pushButton_pause.setCheckable(True)
+
+        self.horizontalLayout_2.addWidget(self.pushButton_pause)
+
+        self.pushButton_stop = QPushButton(self.widget)
+        self.buttonGroup.addButton(self.pushButton_stop)
+        self.pushButton_stop.setObjectName(u"pushButton_stop")
+        icon2 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStop))
+        self.pushButton_stop.setIcon(icon2)
+        self.pushButton_stop.setCheckable(True)
+        self.pushButton_stop.setChecked(True)
+
+        self.horizontalLayout_2.addWidget(self.pushButton_stop)
+
+
+        self.gridLayout.addWidget(self.widget, 0, 0, 1, 1)
+
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
         self.tab_raw = QWidget()
@@ -67,12 +126,11 @@ class Ui_ModbusParserViewer(object):
 
         self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)
 
-        self.checkBox_pause = QCheckBox(self.centralwidget)
-        self.checkBox_pause.setObjectName(u"checkBox_pause")
-
-        self.gridLayout.addWidget(self.checkBox_pause, 0, 0, 1, 1)
-
         ModbusParserViewer.setCentralWidget(self.centralwidget)
+#if QT_CONFIG(shortcut)
+        self.label.setBuddy(self.lineEdit_port)
+        self.label_2.setBuddy(self.lineEdit_baudrate)
+#endif // QT_CONFIG(shortcut)
 
         self.retranslateUi(ModbusParserViewer)
 
@@ -84,9 +142,13 @@ class Ui_ModbusParserViewer(object):
 
     def retranslateUi(self, ModbusParserViewer):
         ModbusParserViewer.setWindowTitle(QCoreApplication.translate("ModbusParserViewer", u"ModbusParserViewer", None))
+        self.label.setText(QCoreApplication.translate("ModbusParserViewer", u"Port:", None))
+        self.label_2.setText(QCoreApplication.translate("ModbusParserViewer", u"Baudrate:", None))
+        self.pushButton_start.setText(QCoreApplication.translate("ModbusParserViewer", u"Start", None))
+        self.pushButton_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
+        self.pushButton_stop.setText(QCoreApplication.translate("ModbusParserViewer", u"Stop", None))
         self.pushButton_showPair.setText(QCoreApplication.translate("ModbusParserViewer", u"Show Corresponding Pair", None))
         self.checkBox_scrollEnd.setText(QCoreApplication.translate("ModbusParserViewer", u"Scroll to End", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_raw), QCoreApplication.translate("ModbusParserViewer", u"Raw Packets", None))
-        self.checkBox_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause UI Updates", None))
     # retranslateUi
 

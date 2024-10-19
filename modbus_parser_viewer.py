@@ -1,13 +1,16 @@
 import datetime
 import collections
+import typing
+import os
 
 from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidgetItem
-from PySide6.QtGui import QTextCursor
-from PySide6.QtCore import Qt
+from PySide6.QtGui import QTextCursor, QIntValidator
+from PySide6.QtCore import QTimer
 
 import modbus_parser
 import device_value_table
 import tools
+import serial_reader
 
 from modbus_parser_viewer_ui import Ui_ModbusParserViewer
 
@@ -18,14 +21,24 @@ class ModbusParserViewer(QMainWindow):
         self.ui = Ui_ModbusParserViewer()
         self.ui.setupUi(self)
 
+        self.serial_reader: typing.Optional[serial_reader.SerialReader] = None
+        self.reader_timer = QTimer(self)
+        if os.getenv("TEST_SERIAL") == "1":
+            self.reader_timer.setInterval(500)
+        else:
+            self.reader_timer.setInterval(1)
+        self.reader_timer.timeout.connect(self.inject)
         self.parser = modbus_parser.ModbusParser(self.parser_callback, self.parser_callback)
 
         self.device_dict: dict[int, device_value_table.DeviceValueTable] = dict()
         self.block_idx_to_packet_dict = dict()
 
-        self.ui.checkBox_pause.checkStateChanged.connect(self.unpause_handler)
-        self.ui.checkBox_pause.checkStateChanged.connect(self.pause_to_scrollEnd)
+        self.ui.lineEdit_baudrate.setValidator(QIntValidator(0, 999999))
+        self.ui.pushButton_start.toggled.connect(self.read_start)
+        self.ui.pushButton_pause.toggled.connect(self.unpause_handler)
+        self.ui.pushButton_pause.toggled.connect(self.pause_to_scrollEnd)
         self.raw_text_pause_queue: collections.deque[tuple[str, any]] = collections.deque()
+        self.ui.pushButton_stop.toggled.connect(self.read_stop)
 
         self.ui.plainTextEdit_Raw.cursorPositionChanged.connect(self.packet_show_parsed_by_cursor)
         self.current_parsed_blk_idx = -1
@@ -38,7 +51,47 @@ class ModbusParserViewer(QMainWindow):
 
         self.ui.listWidget_addrValue.itemClicked.connect(self.highlight_raw_register_value)
 
-    def inject(self, data: bytes):
+    def read_start(self, checked):
+        if not checked:
+            return
+        self.ui.pushButton_pause.setEnabled(True)
+
+        if self.serial_reader is None:
+            # Previously stopped
+            if os.getenv("TEST_SERIAL") == "1":
+                self.serial_reader = serial_reader.SerialReaderTest()
+            else:
+                port = self.ui.lineEdit_port.text()
+                baudrate = int(self.ui.lineEdit_baudrate.text())
+                self.serial_reader = serial_reader.SerialReader(port, baudrate)
+
+        self.reader_timer.start()
+
+    def read_stop(self, checked):
+        if not checked:
+            return
+        self.ui.pushButton_pause.setDisabled(True)
+        self.reader_timer.stop()
+        self.serial_reader.close()
+        self.serial_reader = None
+
+        while self.ui.tabWidget.count() > 1:
+            self.ui.tabWidget.removeTab(1)
+        self.device_dict.clear()
+        self.block_idx_to_packet_dict.clear()
+        self.current_parsed_blk_idx = -1
+        self.current_parsed_packet_type = type(None)
+        self.sub_packet_highlighting = False
+        self.res_req_dict.clear()
+        self.last_req = None
+        self.ui.plainTextEdit_Raw.clear()
+        self.ui.plainTextEdit_Parsed.clear()
+        self.ui.listWidget_addrValue.clear()
+
+        self.parser.clear()
+
+    def inject(self):
+        data = self.serial_reader.read()
         while data:
             # The program is built on an assumption that only one packet gets found in one processing.
             # 6 is the length of a shortest possible modbus RTU packet.
@@ -47,7 +100,7 @@ class ModbusParserViewer(QMainWindow):
             data = data[11:]
 
     def add_to_raw(self, data: bytes):
-        if self.ui.checkBox_pause.isChecked():
+        if self.ui.pushButton_pause.isChecked():
             self.raw_text_pause_queue.append(("add", data))
             return
         hex_str = self.bytes_to_hex_str(data)
@@ -63,8 +116,8 @@ class ModbusParserViewer(QMainWindow):
             # keep tracking to the end
             self.ui.plainTextEdit_Raw.moveCursor(QTextCursor.MoveOperation.End)
 
-    def unpause_handler(self, checked: Qt.CheckState):
-        if checked == Qt.CheckState.Checked:
+    def unpause_handler(self, checked):
+        if checked:
             return
         self.packet_show_parsed(None, -1)
         while self.raw_text_pause_queue:
@@ -76,9 +129,9 @@ class ModbusParserViewer(QMainWindow):
                     self.packet_register(*data)
 
     def pause_to_scrollEnd(self, checked):
-        if checked == Qt.CheckState.Unchecked:
+        if not checked:
             self.ui.checkBox_scrollEnd.setEnabled(True)
-        if checked == Qt.CheckState.Checked:
+        if checked:
             self.ui.checkBox_scrollEnd.setChecked(False)
             self.ui.checkBox_scrollEnd.setEnabled(False)
 
@@ -92,7 +145,7 @@ class ModbusParserViewer(QMainWindow):
         self.packet_register(msg, packet, now)
 
     def packet_register(self, msg, packet, now):
-        if self.ui.checkBox_pause.isChecked():
+        if self.ui.pushButton_pause.isChecked():
             self.raw_text_pause_queue.append(("packet_reg", (msg, packet, now)))
             return
 
