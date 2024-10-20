@@ -69,3 +69,6 @@ for a while, try restarting the program.
 * Support for separate holding/input registers
 * Support for separate values on read/write operations
 * Support for bit operations
+
+## Known Issues
+* The widget for each device won't nicely resize to the tab
