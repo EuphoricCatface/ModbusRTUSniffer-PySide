@@ -9,7 +9,7 @@ the same for Coils and Discrete Inputs, and read and write will result in the sa
 This program is inspired by another python modbus sniffer https://github.com/snhobbs/ModbusSniffer/.
 
 ## Installation
-This program depends on `PySide6`, `pydot`, `pymodbus===3.7.3` and `pyserial`.
+This program depends on `PySide6`, `dotenv`, `pymodbus===3.7.3` and `pyserial`.
 
 Because this program uses the internal parsing code of `pymodbus` which is not formally documented, it may easily
 get broken as `pymodbus` gets upgraded. Current version of this program is developed against the 3.7.3 version. 
