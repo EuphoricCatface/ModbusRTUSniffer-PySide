@@ -31,19 +31,19 @@ class Ui_DeviceAddrWidget(object):
         self.widget.setObjectName(u"widget")
         self.horizontalLayout = QHBoxLayout(self.widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.checkBox_sameRegisters = QCheckBox(self.widget)
-        self.checkBox_sameRegisters.setObjectName(u"checkBox_sameRegisters")
-        self.checkBox_sameRegisters.setEnabled(False)
-        self.checkBox_sameRegisters.setChecked(True)
-
-        self.horizontalLayout.addWidget(self.checkBox_sameRegisters)
-
         self.checkBox_sameBits = QCheckBox(self.widget)
         self.checkBox_sameBits.setObjectName(u"checkBox_sameBits")
         self.checkBox_sameBits.setEnabled(False)
         self.checkBox_sameBits.setChecked(True)
 
         self.horizontalLayout.addWidget(self.checkBox_sameBits)
+
+        self.checkBox_sameRegisters = QCheckBox(self.widget)
+        self.checkBox_sameRegisters.setObjectName(u"checkBox_sameRegisters")
+        self.checkBox_sameRegisters.setEnabled(False)
+        self.checkBox_sameRegisters.setChecked(True)
+
+        self.horizontalLayout.addWidget(self.checkBox_sameRegisters)
 
 
         self.verticalLayout.addWidget(self.widget)
@@ -70,8 +70,8 @@ class Ui_DeviceAddrWidget(object):
 
     def retranslateUi(self, DeviceAddrWidget):
         DeviceAddrWidget.setWindowTitle(QCoreApplication.translate("DeviceAddrWidget", u"DeviceAddrWidget", None))
-        self.checkBox_sameRegisters.setText(QCoreApplication.translate("DeviceAddrWidget", u"Holding/input registers are the same", None))
         self.checkBox_sameBits.setText(QCoreApplication.translate("DeviceAddrWidget", u"Coils/Discrete Inputs are the same", None))
+        self.checkBox_sameRegisters.setText(QCoreApplication.translate("DeviceAddrWidget", u"Holding/input registers are the same", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_bit), QCoreApplication.translate("DeviceAddrWidget", u"Bits", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_register), QCoreApplication.translate("DeviceAddrWidget", u"Registers", None))
     # retranslateUi

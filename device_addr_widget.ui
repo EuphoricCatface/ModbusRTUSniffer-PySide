@@ -18,12 +18,12 @@
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QCheckBox" name="checkBox_sameRegisters">
+       <widget class="QCheckBox" name="checkBox_sameBits">
         <property name="enabled">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Holding/input registers are the same</string>
+         <string>Coils/Discrete Inputs are the same</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -31,12 +31,12 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox_sameBits">
+       <widget class="QCheckBox" name="checkBox_sameRegisters">
         <property name="enabled">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Coils/Discrete Inputs are the same</string>
+         <string>Holding/input registers are the same</string>
         </property>
         <property name="checked">
          <bool>true</bool>

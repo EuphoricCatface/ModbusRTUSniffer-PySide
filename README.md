@@ -3,8 +3,8 @@
 ## Overview
 This program sniffs modbus RTU packets, and shows the last known values neatly organized into a table for each device.
 
-Currently, it assumes Input Registers and Holding Registers are in the same memory,
-and read and write will result in the same values.
+Currently, it assumes Input Registers and Holding Registers are in the same memory, 
+the same for Coils and Discrete Inputs, and read and write will result in the same values.
 
 This program is inspired by another python modbus sniffer https://github.com/snhobbs/ModbusSniffer/.
 
@@ -48,6 +48,7 @@ You can save raw data to import later. It won't preserve the timing of each pack
 
 ### Slave Tables
 When the parser detects a packet for a slave address, a page for the address will be created.
+Each page has two tables, namely Bits and Registers.
 Each row shows 16 registers, and unoccupied rows will be skipped. Recently updated cells will be highlighted
 with colors, green for reading and red for writing, decaying as time goes.
 
@@ -59,7 +60,7 @@ highlighting the packet.
 
 ## Disclaimer
 This program is not guaranteed to always succeed on sniffing. If you find the program not finding any packets
-for a while, try restarting the program.
+for a while, try restarting the sniffing.
 
 ## TODO
 * Support for separate holding/input registers // coils/discrete inputs
