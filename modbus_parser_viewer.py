@@ -262,8 +262,15 @@ class ModbusParserViewer(QMainWindow):
             values = msg.registers
 
         for offset, value in enumerate(values):
+            if isinstance(value, bool):
+                if offset % 8 >= 4:
+                    value_hex = f"{int(value) << (offset % 4):X}_"
+                else:
+                    value_hex = f"_{int(value) << (offset % 4):X}"
+            else:
+                value_hex = f"{value:04X}"
             self.ui.listWidget_addrValue.addItem(
-                f"0x{addr + offset:04X} = {value} ({value:04X})"
+                f"0x{addr + offset:04X} = {value} ({value_hex})"
             )
 
     def packet_show_parsed_by_cursor(self):
