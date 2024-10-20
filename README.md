@@ -32,9 +32,12 @@ environment variables.
 
 ## UI
 Above the tabs, you can input port name and baudrate, and select `Start` to start the sniffing.
-`Pause` will stop updating the UI, so you can observe the states at that moment.
+
+`Pause` will stop updating the UI, so you can observe the states at that moment.  
 (Parsing will still be running in the background, so that the timestamps showing up after unpause remains accurate)
-`Stop` will disconnect you from the serial connection, and delete all data collected in the program.
+
+`Stop` will disconnect you from the serial connection.  
+The data collected on the program will be preserved until next time `Start` is pressed.
 
 ### Raw Packets
 On the main `Raw Packets` page, the raw bytes will show up on the left side. When a packet is detected, the packet

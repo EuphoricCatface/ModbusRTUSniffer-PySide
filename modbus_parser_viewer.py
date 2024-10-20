@@ -66,6 +66,21 @@ class ModbusParserViewer(QMainWindow):
                 baudrate = int(self.ui.lineEdit_baudrate.text())
                 self.serial_reader = serial_reader.SerialReader(port, baudrate)
 
+            while self.ui.tabWidget.count() > 1:
+                self.ui.tabWidget.removeTab(1)
+            self.device_dict.clear()
+            self.block_idx_to_packet_dict.clear()
+            self.current_parsed_blk_idx = -1
+            self.current_parsed_packet_type = type(None)
+            self.sub_packet_highlighting = False
+            self.res_req_dict.clear()
+            self.last_req = None
+            self.ui.plainTextEdit_Raw.clear()
+            self.ui.plainTextEdit_Parsed.clear()
+            self.ui.listWidget_addrValue.clear()
+
+            self.parser.clear()
+
         self.reader_timer.start()
 
     def read_stop(self):
@@ -73,21 +88,6 @@ class ModbusParserViewer(QMainWindow):
         self.reader_timer.stop()
         self.serial_reader.close()
         self.serial_reader = None
-
-        while self.ui.tabWidget.count() > 1:
-            self.ui.tabWidget.removeTab(1)
-        self.device_dict.clear()
-        self.block_idx_to_packet_dict.clear()
-        self.current_parsed_blk_idx = -1
-        self.current_parsed_packet_type = type(None)
-        self.sub_packet_highlighting = False
-        self.res_req_dict.clear()
-        self.last_req = None
-        self.ui.plainTextEdit_Raw.clear()
-        self.ui.plainTextEdit_Parsed.clear()
-        self.ui.listWidget_addrValue.clear()
-
-        self.parser.clear()
 
     def inject(self):
         data = self.serial_reader.read()
