@@ -86,6 +86,7 @@ class ModbusParserViewer(QMainWindow):
     def read_stop(self):
         self.ui.pushButton_pause.setDisabled(True)
         self.reader_timer.stop()
+        self.ui.checkBox_scrollEnd.setChecked(False)
         self.serial_reader.close()
         self.serial_reader = None
 
