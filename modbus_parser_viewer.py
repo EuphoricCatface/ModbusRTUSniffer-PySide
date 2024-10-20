@@ -53,6 +53,7 @@ class ModbusParserViewer(QMainWindow):
 
         self.raw_data = bytearray()
         self.ui.pushButton_saveRaw.pressed.connect(self.save_raw)
+        self.ui.pushButton_import.pressed.connect(self.import_raw)
 
     def initialize(self):
         while self.ui.tabWidget.count() > 1:
@@ -72,6 +73,7 @@ class ModbusParserViewer(QMainWindow):
 
     def read_start(self):
         self.ui.pushButton_pause.setEnabled(True)
+        self.ui.pushButton_import.setEnabled(False)
 
         if self.serial_reader is None:
             # Previously stopped. Otherwise, previously paused.
@@ -90,6 +92,7 @@ class ModbusParserViewer(QMainWindow):
         self.ui.pushButton_pause.setDisabled(True)
         self.reader_timer.stop()
         self.ui.checkBox_scrollEnd.setChecked(False)
+        self.ui.pushButton_import.setEnabled(True)
         self.serial_reader.close()
         self.serial_reader = None
 
@@ -350,3 +353,10 @@ class ModbusParserViewer(QMainWindow):
             filename += ".raw"
         with open(filename, mode="wb") as fp:
             fp.write(self.raw_data)
+
+    def import_raw(self):
+        filename, _filter = QFileDialog.getOpenFileName(self, "Open Raw Data", filter="Raw Data (*.raw)")
+        with open(filename, mode="rb") as fp:
+            raw = fp.read()
+        self.initialize()
+        self.inject(raw)

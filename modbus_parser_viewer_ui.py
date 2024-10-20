@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QGridLayout,
-    QHBoxLayout, QLabel, QLineEdit, QListWidget,
-    QListWidgetItem, QMainWindow, QPlainTextEdit, QPushButton,
-    QSizePolicy, QTabWidget, QWidget)
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame,
+    QGridLayout, QHBoxLayout, QLabel, QLineEdit,
+    QListWidget, QListWidgetItem, QMainWindow, QPlainTextEdit,
+    QPushButton, QSizePolicy, QTabWidget, QWidget)
 
 class Ui_ModbusParserViewer(object):
     def setupUi(self, ModbusParserViewer):
@@ -33,6 +33,18 @@ class Ui_ModbusParserViewer(object):
         self.widget.setObjectName(u"widget")
         self.horizontalLayout_2 = QHBoxLayout(self.widget)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.pushButton_import = QPushButton(self.widget)
+        self.pushButton_import.setObjectName(u"pushButton_import")
+
+        self.horizontalLayout_2.addWidget(self.pushButton_import)
+
+        self.line = QFrame(self.widget)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.VLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_2.addWidget(self.line)
+
         self.label = QLabel(self.widget)
         self.label.setObjectName(u"label")
 
@@ -122,7 +134,6 @@ class Ui_ModbusParserViewer(object):
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.checkBox_scrollEnd = QCheckBox(self.widget_2)
         self.checkBox_scrollEnd.setObjectName(u"checkBox_scrollEnd")
-        self.checkBox_scrollEnd.setChecked(True)
 
         self.horizontalLayout_3.addWidget(self.checkBox_scrollEnd)
 
@@ -154,6 +165,7 @@ class Ui_ModbusParserViewer(object):
 
     def retranslateUi(self, ModbusParserViewer):
         ModbusParserViewer.setWindowTitle(QCoreApplication.translate("ModbusParserViewer", u"ModbusParserViewer", None))
+        self.pushButton_import.setText(QCoreApplication.translate("ModbusParserViewer", u"Import Raw Data", None))
         self.label.setText(QCoreApplication.translate("ModbusParserViewer", u"Port:", None))
         self.label_2.setText(QCoreApplication.translate("ModbusParserViewer", u"Baudrate:", None))
         self.pushButton_start.setText(QCoreApplication.translate("ModbusParserViewer", u"Start", None))

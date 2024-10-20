@@ -39,6 +39,8 @@ Above the tabs, you can input port name and baudrate, and select `Start` to star
 `Stop` will disconnect you from the serial connection.  
 The data collected on the program will be preserved until next time `Start` is pressed.
 
+When sniffing is not running, you can import a raw data file to assess with this tool.
+
 ### Raw Packets
 On the main `Raw Packets` page, the raw bytes will show up on the left side. When a packet is detected, the packet
 will have its own line, along with the time when the detection occurred.
@@ -50,7 +52,9 @@ When `Scroll to End` is checked, the most recently parsed packet will be shown o
 Otherwise, you can click a packet on the left side to see its contents parsed. When you click on a address/value pair
 on the bottom right side, it will highlight the corresponding part of the packet on the left side.
 If available, you can switch to the other packet of the request/response pair by clicking on 
-`Show Corresponding Pair` button (even though the packets are usually right next to each other). 
+`Show Corresponding Pair` button (even though the packets are usually right next to each other).
+
+You can save raw data to import later. It won't preserve the timing of each packet arriving.
 
 ### Slave Tables
 When the parser detects a packet for a slave address, a page for the address will be created.
@@ -64,7 +68,6 @@ This program is not guaranteed to always succeed on sniffing. If you find the pr
 for a while, try restarting the program.
 
 ## TODO
-* Importing raw data
 * Serial exception handling
 * Support for separate holding/input registers // coils/discrete inputs
 * Support for separate values on read/write operations
