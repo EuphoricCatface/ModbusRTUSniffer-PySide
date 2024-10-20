@@ -26,13 +26,6 @@ class Ui_DeviceValueTable(object):
         DeviceValueTable.resize(651, 599)
         self.gridLayout = QGridLayout(DeviceValueTable)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.checkBox_sameRegisters = QCheckBox(DeviceValueTable)
-        self.checkBox_sameRegisters.setObjectName(u"checkBox_sameRegisters")
-        self.checkBox_sameRegisters.setEnabled(False)
-        self.checkBox_sameRegisters.setChecked(True)
-
-        self.gridLayout.addWidget(self.checkBox_sameRegisters, 0, 0, 1, 1)
-
         self.tableWidget_main = QTableWidget(DeviceValueTable)
         if (self.tableWidget_main.columnCount() < 16):
             self.tableWidget_main.setColumnCount(16)
@@ -73,6 +66,7 @@ class Ui_DeviceValueTable(object):
         __qtablewidgetitem16 = QTableWidgetItem()
         self.tableWidget_main.setVerticalHeaderItem(0, __qtablewidgetitem16)
         self.tableWidget_main.setObjectName(u"tableWidget_main")
+        self.tableWidget_main.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tableWidget_main.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tableWidget_main.horizontalHeader().setMinimumSectionSize(25)
         self.tableWidget_main.horizontalHeader().setDefaultSectionSize(50)
@@ -80,6 +74,13 @@ class Ui_DeviceValueTable(object):
         self.tableWidget_main.verticalHeader().setDefaultSectionSize(25)
 
         self.gridLayout.addWidget(self.tableWidget_main, 1, 0, 1, 2)
+
+        self.checkBox_sameRegisters = QCheckBox(DeviceValueTable)
+        self.checkBox_sameRegisters.setObjectName(u"checkBox_sameRegisters")
+        self.checkBox_sameRegisters.setEnabled(False)
+        self.checkBox_sameRegisters.setChecked(True)
+
+        self.gridLayout.addWidget(self.checkBox_sameRegisters, 0, 0, 1, 1)
 
         self.checkBox_sameRW = QCheckBox(DeviceValueTable)
         self.checkBox_sameRW.setObjectName(u"checkBox_sameRW")
@@ -96,7 +97,6 @@ class Ui_DeviceValueTable(object):
 
     def retranslateUi(self, DeviceValueTable):
         DeviceValueTable.setWindowTitle(QCoreApplication.translate("DeviceValueTable", u"DeviceValueTable", None))
-        self.checkBox_sameRegisters.setText(QCoreApplication.translate("DeviceValueTable", u"Holding/input registers are the same", None))
         ___qtablewidgetitem = self.tableWidget_main.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("DeviceValueTable", u"0", None));
         ___qtablewidgetitem1 = self.tableWidget_main.horizontalHeaderItem(1)
@@ -131,6 +131,7 @@ class Ui_DeviceValueTable(object):
         ___qtablewidgetitem15.setText(QCoreApplication.translate("DeviceValueTable", u"F", None));
         ___qtablewidgetitem16 = self.tableWidget_main.verticalHeaderItem(0)
         ___qtablewidgetitem16.setText(QCoreApplication.translate("DeviceValueTable", u"...", None));
+        self.checkBox_sameRegisters.setText(QCoreApplication.translate("DeviceValueTable", u"Holding/input registers are the same", None))
         self.checkBox_sameRW.setText(QCoreApplication.translate("DeviceValueTable", u"Read/write are the same", None))
     # retranslateUi
 

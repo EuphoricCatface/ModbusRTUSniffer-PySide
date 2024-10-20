@@ -173,6 +173,7 @@ class ModbusParserViewer(QMainWindow):
             self.ui.tabWidget.addTab(tab_page, f"Addr {msg.slave_id}")
             self.device_dict[msg.slave_id] = table
             table.msg_show_req.connect(self.msg_show_handler)
+            table.breakpoint_req.connect(self.breakpoint_handler)
 
         self.device_dict[msg.slave_id].inject_msg(block_idx, msg, now)
 
@@ -271,6 +272,10 @@ class ModbusParserViewer(QMainWindow):
         # packet_show_parsed() will naturally be called because of the cursorPositionChanged signal.
         t_cursor.movePosition(QTextCursor.MoveOperation.EndOfBlock, QTextCursor.MoveMode.KeepAnchor)
         self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
+
+    def breakpoint_handler(self, block_idx):
+        self.ui.pushButton_pause.click()
+        self.msg_show_handler(block_idx)
 
     def pair_req_res(self, msg, block_idx):
         # A bit of parsing here, so that we can tell associated addresses later
