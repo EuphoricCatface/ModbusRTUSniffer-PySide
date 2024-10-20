@@ -70,6 +70,7 @@ class ModbusParserViewer(QMainWindow):
         self.ui.listWidget_addrValue.clear()
 
         self.parser.clear()
+        self.raw_data.clear()
 
     def read_start(self):
         self.ui.pushButton_pause.setEnabled(True)
