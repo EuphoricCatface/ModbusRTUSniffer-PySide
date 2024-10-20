@@ -73,23 +73,28 @@ class ModbusParserViewer(QMainWindow):
         self.raw_data.clear()
 
     def read_start(self):
+        if self.serial_reader:
+            # Previously paused. "Unpausing" will take care of everything here.
+            return
+
         self.ui.pushButton_pause.setEnabled(True)
         self.ui.pushButton_import.setEnabled(False)
         self.ui.lineEdit_port.setEnabled(False)
         self.ui.lineEdit_baudrate.setEnabled(False)
 
-        if self.serial_reader is None:
-            # Previously stopped. Otherwise, previously paused.
-            self.initialize()
+        self.initialize()
 
-            if os.getenv("TEST_SERIAL") == "1":
-                self.serial_reader = serial_reader.SerialReaderTest()
-            else:
-                port = self.ui.lineEdit_port.text()
-                baudrate = int(self.ui.lineEdit_baudrate.text())
-                self.serial_reader = serial_reader.SerialReader(port, baudrate)
+        if os.getenv("TEST_SERIAL") == "1":
+            self.serial_reader = serial_reader.SerialReaderTest()
+        else:
+            port = self.ui.lineEdit_port.text()
+            baudrate = self.ui.lineEdit_baudrate.text()
+            if baudrate == "":
+                self.ui.lineEdit_baudrate.setText("0")
+                baudrate = 0
+            self.serial_reader = serial_reader.SerialReader(port, int(baudrate))
 
-            self.reader_timer.start()
+        self.reader_timer.start()
 
     def read_stop(self):
         self.ui.pushButton_pause.setEnabled(False)
