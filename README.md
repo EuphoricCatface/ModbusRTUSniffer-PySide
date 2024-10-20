@@ -54,7 +54,9 @@ on the bottom right side, it will highlight the corresponding part of the packet
 If available, you can switch to the other packet of the request/response pair by clicking on 
 `Show Corresponding Pair` button (even though the packets are usually right next to each other).
 
-You can save raw data to import later. It won't preserve the timing of each packet arriving.
+You can save raw data to import later. It won't preserve the timing of each packet arriving.  
+`Example Packet.raw` is also included in the repository, though it's identical to the contents of
+`SerialReaderTest` in `serial_reader.py`.
 
 ### Slave Tables
 When the parser detects a packet for a slave address, a page for the address will be created.
