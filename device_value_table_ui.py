@@ -73,21 +73,14 @@ class Ui_DeviceValueTable(object):
         self.tableWidget_main.verticalHeader().setMinimumSectionSize(15)
         self.tableWidget_main.verticalHeader().setDefaultSectionSize(25)
 
-        self.gridLayout.addWidget(self.tableWidget_main, 1, 0, 1, 2)
-
-        self.checkBox_sameRegisters = QCheckBox(DeviceValueTable)
-        self.checkBox_sameRegisters.setObjectName(u"checkBox_sameRegisters")
-        self.checkBox_sameRegisters.setEnabled(False)
-        self.checkBox_sameRegisters.setChecked(True)
-
-        self.gridLayout.addWidget(self.checkBox_sameRegisters, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.tableWidget_main, 1, 0, 1, 1)
 
         self.checkBox_sameRW = QCheckBox(DeviceValueTable)
         self.checkBox_sameRW.setObjectName(u"checkBox_sameRW")
         self.checkBox_sameRW.setEnabled(False)
         self.checkBox_sameRW.setChecked(True)
 
-        self.gridLayout.addWidget(self.checkBox_sameRW, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.checkBox_sameRW, 0, 0, 1, 1)
 
 
         self.retranslateUi(DeviceValueTable)
@@ -131,7 +124,6 @@ class Ui_DeviceValueTable(object):
         ___qtablewidgetitem15.setText(QCoreApplication.translate("DeviceValueTable", u"F", None));
         ___qtablewidgetitem16 = self.tableWidget_main.verticalHeaderItem(0)
         ___qtablewidgetitem16.setText(QCoreApplication.translate("DeviceValueTable", u"...", None));
-        self.checkBox_sameRegisters.setText(QCoreApplication.translate("DeviceValueTable", u"Holding/input registers are the same", None))
         self.checkBox_sameRW.setText(QCoreApplication.translate("DeviceValueTable", u"Read/write are the same", None))
     # retranslateUi
 

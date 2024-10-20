@@ -8,7 +8,7 @@ from PySide6.QtGui import QTextCursor, QIntValidator
 from PySide6.QtCore import QTimer
 
 import modbus_parser
-import device_value_table
+import device_addr_widget
 import tools
 import serial_reader
 
@@ -30,7 +30,7 @@ class ModbusParserViewer(QMainWindow):
         self.reader_timer.timeout.connect(self.inject)
         self.parser = modbus_parser.ModbusParser(self.parser_callback, self.parser_callback)
 
-        self.device_dict: dict[int, device_value_table.DeviceValueTable] = dict()
+        self.device_dict: dict[int, device_addr_widget.DeviceAddrWidget] = dict()
         self.block_idx_to_packet_dict = dict()
 
         self.ui.lineEdit_baudrate.setValidator(QIntValidator(0, 999999))
@@ -164,7 +164,7 @@ class ModbusParserViewer(QMainWindow):
             return
 
         if msg.slave_id not in self.device_dict:
-            table = device_value_table.DeviceValueTable(self.ui.tabWidget)
+            table = device_addr_widget.DeviceAddrWidget(self.ui.tabWidget)
             self.ui.tabWidget.addTab(table, f"Addr {msg.slave_id}")
             self.device_dict[msg.slave_id] = table
             table.msg_show_req.connect(self.msg_show_handler)

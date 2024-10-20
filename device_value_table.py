@@ -68,7 +68,7 @@ class DeviceValueTable(QWidget):
     msg_show_req = Signal(int)
     breakpoint_req = Signal(int)
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.ui = Ui_DeviceValueTable()
         self.ui.setupUi(self)
@@ -80,9 +80,6 @@ class DeviceValueTable(QWidget):
         self.last_request = None
 
     def inject_msg(self, block_idx, msg, now):
-        if "Coil" in type(msg).__name__:
-            print("Coil operation NYI")
-
         if type(msg).__name__.endswith("Request"):
             if self.last_request is not None:
                 print("A request has arrived right after another request")
