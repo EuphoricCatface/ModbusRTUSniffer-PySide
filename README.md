@@ -66,6 +66,5 @@ for a while, try restarting the program.
 ## TODO
 * Importing raw data
 * Serial exception handling
-* Support for separate holding/input registers
+* Support for separate holding/input registers // coils/discrete inputs
 * Support for separate values on read/write operations
-* Support for bit operations

@@ -51,27 +51,15 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="DeviceValueTable" name="tab_bit">
+      <attribute name="title">
+       <string>Bits</string>
+      </attribute>
+     </widget>
      <widget class="DeviceValueTable" name="tab_register">
       <attribute name="title">
        <string>Registers</string>
       </attribute>
-     </widget>
-     <widget class="QWidget" name="tab_bit">
-      <attribute name="title">
-       <string>Bits</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Coming soon!</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </widget>
    </item>

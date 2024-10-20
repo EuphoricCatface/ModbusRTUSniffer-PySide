@@ -113,6 +113,14 @@ class DeviceValueTable(QWidget):
             case "WriteMultipleRegistersResponse":
                 values = request.values
                 block_idx = req_idx
+            case "ReadDiscreteInputsResponse" | "ReadCoilsResponse":
+                values = response.bits[:request.count]
+            case "WriteSingleCoilResponse":
+                values = [request.value]
+                block_idx = req_idx
+            case "WriteMultipleCoilsResponse":
+                values = request.values
+                block_idx = req_idx
 
         for offset, value in enumerate(values):
             cell_addr = address + offset

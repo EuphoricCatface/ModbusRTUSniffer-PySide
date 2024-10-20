@@ -223,17 +223,29 @@ class ModbusParserViewer(QMainWindow):
         if type(msg).__name__ not in [
             "ReadHoldingRegistersResponse", "ReadInputRegistersResponse",
             "WriteSingleRegisterRequest", "WriteSingleRegisterResponse",
-            "WriteMultipleRegistersRequest"
+            "WriteMultipleRegistersRequest",
+            "ReadDiscreteInputsResponse", "ReadCoilsResponse",
+            "WriteSingleCoilRequest", "WriteSingleCoilResponse",
+            "WriteMultipleCoilsRequest"
         ]:
             return
 
-        if type(msg).__name__ in ["WriteMultipleRegistersRequest"]:
+        if type(msg).__name__ in ["WriteMultipleRegistersRequest", "WriteMultipleCoilsRequest"]:
             addr = msg.address
             values = msg.values
-        elif type(msg).__name__ in ["WriteSingleRegisterRequest", "WriteSingleRegisterResponse"]:
+        elif type(msg).__name__ in ["WriteSingleRegisterRequest", "WriteSingleRegisterResponse",
+                                    "WriteSingleCoilRequest", "WriteSingleCoilResponse"]:
             addr = msg.address
             values = [msg.value]
-        else:
+        elif type(msg).__name__ in ["ReadDiscreteInputsResponse", "ReadCoilsResponse"]:
+            req_idx = self.res_req_dict.get(block_idx)
+            if req_idx is None:
+                self.ui.listWidget_addrValue.addItem("Corresponding request packet not found")
+                return
+            req = self.block_idx_to_packet_dict[req_idx][1]
+            addr = req.address
+            values = msg.bits[:req.count]
+        else:  # type(msg).__name__ in ["ReadHoldingRegistersResponse", "ReadDiscreteInputsResponse"]:
             req_idx = self.res_req_dict.get(block_idx)
             if req_idx is None:
                 self.ui.listWidget_addrValue.addItem("Corresponding request packet not found")
@@ -298,21 +310,33 @@ class ModbusParserViewer(QMainWindow):
 
     def highlight_raw_register_value(self, item: QListWidgetItem):
         index = self.ui.listWidget_addrValue.row(item)
-        base_offset = {
+        base_offset_reg = {
             "ReadHoldingRegistersResponse": 27,
             "ReadInputRegistersResponse": 27,
             "WriteSingleRegisterRequest": 30,
             "WriteSingleRegisterResponse": 30,
             "WriteMultipleRegistersRequest": 39
         }
-        stride = 6
-        width = 5
+        base_offset_bit = {
+            "ReadDiscreteInputsResponse": 27,
+            "ReadCoilsResponse": 27,
+            "WriteSingleCoilRequest": 30,
+            "WriteSingleCoilResponse": 30,
+            "WriteMultipleCoilsRequest": 39
+        }
 
         self.sub_packet_highlighting = True
         then, msg, block = self.block_idx_to_packet_dict[self.current_parsed_blk_idx]
         t_cursor_idx = block.position()
         t_cursor = self.ui.plainTextEdit_Raw.textCursor()
-        t_cursor.setPosition(t_cursor_idx + base_offset[type(msg).__name__] + stride * index)
+        if type(msg).__name__ in base_offset_reg:
+            stride = 6
+            width = 5
+            t_cursor.setPosition(t_cursor_idx + base_offset_reg[type(msg).__name__] + stride * index)
+        else:
+            stride = 3
+            width = 2
+            t_cursor.setPosition(t_cursor_idx + base_offset_bit[type(msg).__name__] + stride * (index // 8))
         t_cursor.movePosition(QTextCursor.MoveOperation.Right, QTextCursor.MoveMode.KeepAnchor, n=width)
         self.ui.plainTextEdit_Raw.setTextCursor(t_cursor)
         self.sub_packet_highlighting = False

@@ -15,8 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QHBoxLayout, QLabel,
-    QSizePolicy, QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QHBoxLayout, QSizePolicy,
+    QTabWidget, QVBoxLayout, QWidget)
 
 from device_value_table import DeviceValueTable
 
@@ -50,20 +50,12 @@ class Ui_DeviceAddrWidget(object):
 
         self.tabWidget = QTabWidget(DeviceAddrWidget)
         self.tabWidget.setObjectName(u"tabWidget")
+        self.tab_bit = DeviceValueTable()
+        self.tab_bit.setObjectName(u"tab_bit")
+        self.tabWidget.addTab(self.tab_bit, "")
         self.tab_register = DeviceValueTable()
         self.tab_register.setObjectName(u"tab_register")
         self.tabWidget.addTab(self.tab_register, "")
-        self.tab_bit = QWidget()
-        self.tab_bit.setObjectName(u"tab_bit")
-        self.verticalLayout_2 = QVBoxLayout(self.tab_bit)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.label = QLabel(self.tab_bit)
-        self.label.setObjectName(u"label")
-        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.verticalLayout_2.addWidget(self.label)
-
-        self.tabWidget.addTab(self.tab_bit, "")
 
         self.verticalLayout.addWidget(self.tabWidget)
 
@@ -80,8 +72,7 @@ class Ui_DeviceAddrWidget(object):
         DeviceAddrWidget.setWindowTitle(QCoreApplication.translate("DeviceAddrWidget", u"DeviceAddrWidget", None))
         self.checkBox_sameRegisters.setText(QCoreApplication.translate("DeviceAddrWidget", u"Holding/input registers are the same", None))
         self.checkBox_sameBits.setText(QCoreApplication.translate("DeviceAddrWidget", u"Coils/Discrete Inputs are the same", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_register), QCoreApplication.translate("DeviceAddrWidget", u"Registers", None))
-        self.label.setText(QCoreApplication.translate("DeviceAddrWidget", u"Coming soon!", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_bit), QCoreApplication.translate("DeviceAddrWidget", u"Bits", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_register), QCoreApplication.translate("DeviceAddrWidget", u"Registers", None))
     # retranslateUi
 

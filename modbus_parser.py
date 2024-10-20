@@ -70,6 +70,8 @@ class ModbusParser:
         # We need to assume the first one must be the request and the next must be response.
         self.writesingleregisterrequest_detected = False
         self.writesingleregisterresponse_expected = False
+        self.writesinglecoilrequest_detected = False
+        self.writesinglecoilresponse_expected = False
 
     def clear(self):
         self.server_framer.databuffer = b''
@@ -80,6 +82,8 @@ class ModbusParser:
 
         self.writesingleregisterrequest_detected = False
         self.writesingleregisterresponse_expected = False
+        self.writesinglecoilrequest_detected = False
+        self.writesinglecoilresponse_expected = False
 
     def process_incoming_packet(self, data):
         self.server_framer.processIncomingPacket(data, self.server_framer_callback)
@@ -96,15 +100,22 @@ class ModbusParser:
         if self.writesingleregisterrequest_detected:
             self.writesingleregisterresponse_expected = True
             self.writesingleregisterrequest_detected = False
+        if self.writesinglecoilrequest_detected:
+            self.writesinglecoilresponse_expected = True
+            self.writesinglecoilrequest_detected = False
 
     def client_framer_callback(self, *args, **kwargs):  # Response
         if (type(kwargs["msg"]).__name__ == "WriteSingleRegisterResponse"
                 and not self.writesingleregisterresponse_expected):
             return
+        if (type(kwargs["msg"]).__name__ == "WriteSingleCoilResponse"
+                and not self.writesinglecoilresponse_expected):
+            return
 
         self.client_made_it = True
         self.client_framer_callback_(*args, **kwargs)
         self.writesingleregisterresponse_expected = False
+        self.writesinglecoilresponse_expected = False
 
     def server_framer_callback(self, *args, **kwargs):  # Request
         if type(kwargs["msg"]).__name__ == "WriteSingleRegisterRequest":
@@ -112,10 +123,16 @@ class ModbusParser:
                 return
             else:
                 self.writesingleregisterrequest_detected = True
+        if type(kwargs["msg"]).__name__ == "WriteSingleCoilRequest":
+            if self.writesinglecoilresponse_expected:
+                return
+            else:
+                self.writesinglecoilrequest_detected = True
 
         self.server_made_it = True
         self.server_framer_callback_(*args, **kwargs)
         self.writesingleregisterresponse_expected = False
+        self.writesinglecoilresponse_expected = False
 
 
 def main():
