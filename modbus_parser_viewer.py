@@ -27,7 +27,7 @@ class ModbusParserViewer(QMainWindow):
             self.reader_timer.setInterval(500)
         else:
             self.reader_timer.setInterval(1)
-        self.reader_timer.timeout.connect(self.inject)
+        self.reader_timer.timeout.connect(lambda: self.inject(self.serial_reader.read()))
         self.parser = modbus_parser.ModbusParser(self.parser_callback, self.parser_callback)
 
         self.device_dict: dict[int, device_addr_widget.DeviceAddrWidget] = dict()
@@ -54,11 +54,29 @@ class ModbusParserViewer(QMainWindow):
         self.raw_data = bytearray()
         self.ui.pushButton_saveRaw.pressed.connect(self.save_raw)
 
+    def initialize(self):
+        while self.ui.tabWidget.count() > 1:
+            self.ui.tabWidget.removeTab(1)
+        self.device_dict.clear()
+        self.block_idx_to_packet_dict.clear()
+        self.current_parsed_blk_idx = -1
+        self.current_parsed_packet_type = type(None)
+        self.sub_packet_highlighting = False
+        self.res_req_dict.clear()
+        self.last_req = None
+        self.ui.plainTextEdit_Raw.clear()
+        self.ui.plainTextEdit_Parsed.clear()
+        self.ui.listWidget_addrValue.clear()
+
+        self.parser.clear()
+
     def read_start(self):
         self.ui.pushButton_pause.setEnabled(True)
 
         if self.serial_reader is None:
-            # Previously stopped
+            # Previously stopped. Otherwise, previously paused.
+            self.initialize()
+
             if os.getenv("TEST_SERIAL") == "1":
                 self.serial_reader = serial_reader.SerialReaderTest()
             else:
@@ -66,22 +84,7 @@ class ModbusParserViewer(QMainWindow):
                 baudrate = int(self.ui.lineEdit_baudrate.text())
                 self.serial_reader = serial_reader.SerialReader(port, baudrate)
 
-            while self.ui.tabWidget.count() > 1:
-                self.ui.tabWidget.removeTab(1)
-            self.device_dict.clear()
-            self.block_idx_to_packet_dict.clear()
-            self.current_parsed_blk_idx = -1
-            self.current_parsed_packet_type = type(None)
-            self.sub_packet_highlighting = False
-            self.res_req_dict.clear()
-            self.last_req = None
-            self.ui.plainTextEdit_Raw.clear()
-            self.ui.plainTextEdit_Parsed.clear()
-            self.ui.listWidget_addrValue.clear()
-
-            self.parser.clear()
-
-        self.reader_timer.start()
+            self.reader_timer.start()
 
     def read_stop(self):
         self.ui.pushButton_pause.setDisabled(True)
@@ -90,8 +93,7 @@ class ModbusParserViewer(QMainWindow):
         self.serial_reader.close()
         self.serial_reader = None
 
-    def inject(self):
-        data = self.serial_reader.read()
+    def inject(self, data):
         self.raw_data.extend(data)
         while data:
             # The program is built on an assumption that only one packet gets found in one processing.
