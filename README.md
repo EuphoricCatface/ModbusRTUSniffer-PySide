@@ -53,6 +53,10 @@ with colors, green for reading and red for writing, decaying as time goes.
 
 Double-clicking on a cell will take you to the `Raw Packets` page, highlighting the packet that updated the cell.
 
+Right-clicking on a cell will give you options to add breakpoints on a cell, with the options of "Change", "Read"
+and "Write". When a packet triggers a breakpoint, the UI will be paused, and will take you to the `Raw Packets` page,
+highlighting the packet.
+
 ## Disclaimer
 This program is not guaranteed to always succeed on sniffing. If you find the program not finding any packets
 for a while, try restarting the program.
