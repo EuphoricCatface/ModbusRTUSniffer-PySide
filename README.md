@@ -3,8 +3,8 @@
 ## Overview
 This program sniffs modbus RTU packets, and shows the last known values neatly organized into a table for each device.
 
-Currently, it doesn't support bit operations, and assumes Input Registers and Holding Registers are in the same
-memory, and read and write will result in the same values.
+Currently, it assumes Input Registers and Holding Registers are in the same memory,
+and read and write will result in the same values.
 
 This program is inspired by another python modbus sniffer https://github.com/snhobbs/ModbusSniffer/.
 
