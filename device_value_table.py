@@ -29,6 +29,17 @@ class ColorFadeItem(QTableWidgetItem):
         b = gr.blue() * (1 - value) + wh.blue() * value
         self.setBackground(QColor(r, g, b))
 
+    def set_text_with_metadata(self, text, block_idx, update_time, rw):
+        self.block_idx = block_idx
+        self.update_time = update_time
+        self.rw = rw
+        match self.rw:
+            case "r":
+                self.start_color = QColor("#00FF00")
+            case "w":
+                self.start_color = QColor("#FF0000")
+        self.setText(text)
+
     def setText(self, text):
         super().setText(text)
         self.animation.stop()
@@ -100,12 +111,13 @@ class DeviceValueTable(QWidget):
                 table_row = self.quotient_to_table_row(row)
                 self.ui.tableWidget_main.setItem(table_row, column, cell)
                 self.row_dict[row][column] = cell
-            cell.block_idx = block_idx
-            cell.update_time = now
+
+            rw = ""
             if type(response).__name__.startswith("Write"):
-                cell.start_color = QColor("#FF0000")
+                rw = "w"
             elif type(response).__name__.startswith("Read"):
-                cell.start_color = QColor("#00FF00")
+                rw = "r"
+            cell.set_update_metadata(block_idx, now, rw)
             cell.setText(str(value))
 
     def insert_row(self, new_row):
