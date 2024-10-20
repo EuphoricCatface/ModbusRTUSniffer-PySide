@@ -14,19 +14,7 @@ This program depends on `PySide6`, `pydot`, `pymodbus===3.7.3` and `pyserial`.
 Because this program uses the internal parsing code of `pymodbus` which is not formally documented, it may easily
 get broken as `pymodbus` gets upgraded. Current version of this program is developed against the 3.7.3 version. 
 
-## Usage
-This program accepts environment variables `PORT` and `BAUDRATE`. You can place them in `.env` file in the project
-folder, or supply them in the command line.
-
-```dotenv
-PORT="/dev/ttyUSB0"
-BAUDRATE=38400
-```
-
-```commandline
-$ PORT="/dev/ttyUSB0" BAUDRATE=38400 python ./main.py
-```
-
+## Options
 If you want to test this program without actually connecting to a serial device, you can add `TEST_SERIAL=1` to the
 environment variables.
 
@@ -39,7 +27,9 @@ Above the tabs, you can input port name and baudrate, and select `Start` to star
 `Stop` will disconnect you from the serial connection.  
 The data collected on the program will be preserved until next time `Start` is pressed.
 
-When sniffing is not running, you can import a raw data file to assess with this tool.
+When sniffing is not running, you can import a raw data file to assess with this tool.  
+`Example Packet.raw` is also included in the repository, even though it's identical to the contents of
+`SerialReaderTest` in `serial_reader.py`.
 
 ### Raw Packets
 On the main `Raw Packets` page, the raw bytes will show up on the left side. When a packet is detected, the packet
@@ -54,9 +44,7 @@ on the bottom right side, it will highlight the corresponding part of the packet
 If available, you can switch to the other packet of the request/response pair by clicking on 
 `Show Corresponding Pair` button (even though the packets are usually right next to each other).
 
-You can save raw data to import later. It won't preserve the timing of each packet arriving.  
-`Example Packet.raw` is also included in the repository, though it's identical to the contents of
-`SerialReaderTest` in `serial_reader.py`.
+You can save raw data to import later. It won't preserve the timing of each packet arriving.
 
 ### Slave Tables
 When the parser detects a packet for a slave address, a page for the address will be created.
