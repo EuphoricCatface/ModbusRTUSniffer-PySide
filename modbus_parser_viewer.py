@@ -3,7 +3,7 @@ import collections
 import typing
 import os
 
-from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidgetItem, QFileDialog
+from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidgetItem, QFileDialog, QMessageBox
 from PySide6.QtGui import QTextCursor, QIntValidator
 from PySide6.QtCore import QTimer
 
@@ -27,7 +27,7 @@ class ModbusParserViewer(QMainWindow):
             self.reader_timer.setInterval(500)
         else:
             self.reader_timer.setInterval(1)
-        self.reader_timer.timeout.connect(lambda: self.inject(self.serial_reader.read()))
+        self.reader_timer.timeout.connect(self.read_exec)
         self.parser = modbus_parser.ModbusParser(self.parser_callback, self.parser_callback)
 
         self.device_dict: dict[int, device_addr_widget.DeviceAddrWidget] = dict()
@@ -92,9 +92,23 @@ class ModbusParserViewer(QMainWindow):
             if baudrate == "":
                 self.ui.lineEdit_baudrate.setText("0")
                 baudrate = 0
-            self.serial_reader = serial_reader.SerialReader(port, int(baudrate))
+            try:
+                self.serial_reader = serial_reader.SerialReader(port, int(baudrate))
+            except Exception as e:
+                QMessageBox(self).critical(self, "Serial Open Error", str(e))
+                self.ui.pushButton_stop.click()
+                return
 
         self.reader_timer.start()
+
+    def read_exec(self):
+        try:
+            data = self.serial_reader.read()
+        except Exception as e:
+            QMessageBox(self).critical(self, "Serial Open Error", str(e))
+            self.ui.pushButton_stop.click()
+            return
+        self.inject(data)
 
     def read_stop(self):
         self.ui.pushButton_pause.setEnabled(False)
@@ -104,8 +118,9 @@ class ModbusParserViewer(QMainWindow):
 
         self.reader_timer.stop()
         self.ui.checkBox_scrollEnd.setChecked(False)
-        self.serial_reader.close()
-        self.serial_reader = None
+        if self.serial_reader:
+            self.serial_reader.close()
+            self.serial_reader = None
 
     def inject(self, data):
         self.raw_data.extend(data)

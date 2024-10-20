@@ -70,6 +70,5 @@ This program is not guaranteed to always succeed on sniffing. If you find the pr
 for a while, try restarting the program.
 
 ## TODO
-* Serial exception handling
 * Support for separate holding/input registers // coils/discrete inputs
 * Support for separate values on read/write operations
