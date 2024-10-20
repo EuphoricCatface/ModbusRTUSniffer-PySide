@@ -101,9 +101,9 @@ class ModbusParserViewer(QMainWindow):
         while data:
             # The program is built on an assumption that only one packet gets found in one processing.
             # 6 is the length of a shortest possible modbus RTU packet.
-            self.add_to_raw(data[:11])
-            self.parser.process_incoming_packet(data[:11])
-            data = data[11:]
+            self.add_to_raw(data[:6])
+            self.parser.process_incoming_packet(data[:6])
+            data = data[6:]
 
     def add_to_raw(self, data: bytes):
         if self.ui.pushButton_pause.isChecked():
