@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'modbus_parser_viewer.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.0
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,9 +16,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
-    QFrame, QGridLayout, QHBoxLayout, QLabel, QLineEdit,
-    QListWidget, QListWidgetItem, QMainWindow, QPlainTextEdit,
-    QPushButton, QSizePolicy, QTabWidget, QWidget)
+    QFrame, QGridLayout, QHBoxLayout, QLabel,
+    QLineEdit, QListWidget, QListWidgetItem, QMainWindow,
+    QPlainTextEdit, QPushButton, QSizePolicy, QTabWidget,
+    QWidget)
 
 class Ui_ModbusParserViewer(object):
     def setupUi(self, ModbusParserViewer):
@@ -189,3 +190,4 @@ class Ui_ModbusParserViewer(object):
         self.pushButton_saveRaw.setText(QCoreApplication.translate("ModbusParserViewer", u"Save Raw Data", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_raw), QCoreApplication.translate("ModbusParserViewer", u"Raw Packets", None))
     # retranslateUi
+
