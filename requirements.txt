@@ -1,0 +1,4 @@
+PySide6
+python-dotenv
+pymodbus==3.7.3
+pyserial
