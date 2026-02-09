@@ -1,11 +1,15 @@
 import datetime
 import collections
+import glob
+import sys
 import typing
 import os
 
 from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidgetItem, QFileDialog, QMessageBox
 from PySide6.QtGui import QTextCursor, QIntValidator
 from PySide6.QtCore import QTimer
+
+import serial.tools.list_ports
 
 import modbus_parser
 import device_addr_widget
@@ -34,6 +38,8 @@ class ModbusParserViewer(QMainWindow):
         self.block_idx_to_packet_dict = dict()
 
         self.ui.lineEdit_baudrate.setValidator(QIntValidator(0, 999999))
+        self.refresh_ports()
+        self.ui.pushButton_refreshPorts.clicked.connect(self.refresh_ports)
         self.ui.pushButton_start.clicked.connect(self.read_start)
         self.ui.pushButton_pause.toggled.connect(self.unpause_handler)
         self.ui.pushButton_pause.toggled.connect(self.pause_to_scrollEnd)
@@ -72,6 +78,38 @@ class ModbusParserViewer(QMainWindow):
         self.parser.clear()
         self.raw_data.clear()
 
+    def refresh_ports(self):
+        current_text = self.ui.comboBox_port.currentText()
+        self.ui.comboBox_port.clear()
+
+        ports = sorted(serial.tools.list_ports.comports(), key=lambda p: p.device)
+        seen = set()
+        for port_info in ports:
+            device = port_info.device
+            description = port_info.description
+            if description and description != "n/a":
+                label = f"{device} - {description}"
+            else:
+                label = device
+            self.ui.comboBox_port.addItem(label, device)
+            seen.add(device)
+
+        # On Linux, also scan for /dev/ttyUSB* and /dev/ttyACM* that pyserial may miss
+        if sys.platform == "linux":
+            for pattern in ["/dev/ttyUSB[0-9]*", "/dev/ttyACM[0-9]*"]:
+                for path in sorted(glob.glob(pattern)):
+                    if path not in seen:
+                        self.ui.comboBox_port.addItem(path, path)
+                        seen.add(path)
+
+        # Restore previous text if it was custom input
+        if current_text:
+            idx = self.ui.comboBox_port.findData(current_text)
+            if idx >= 0:
+                self.ui.comboBox_port.setCurrentIndex(idx)
+            else:
+                self.ui.comboBox_port.setCurrentText(current_text)
+
     def read_start(self):
         if self.serial_reader:
             # Previously paused. "Unpausing" will take care of everything here.
@@ -79,7 +117,8 @@ class ModbusParserViewer(QMainWindow):
 
         self.ui.pushButton_pause.setEnabled(True)
         self.ui.pushButton_import.setEnabled(False)
-        self.ui.lineEdit_port.setEnabled(False)
+        self.ui.comboBox_port.setEnabled(False)
+        self.ui.pushButton_refreshPorts.setEnabled(False)
         self.ui.lineEdit_baudrate.setEnabled(False)
 
         self.initialize()
@@ -87,7 +126,7 @@ class ModbusParserViewer(QMainWindow):
         if os.getenv("TEST_SERIAL") == "1":
             self.serial_reader = serial_reader.SerialReaderTest()
         else:
-            port = self.ui.lineEdit_port.text()
+            port = self.ui.comboBox_port.currentData() or self.ui.comboBox_port.currentText()
             baudrate = self.ui.lineEdit_baudrate.text()
             if baudrate == "":
                 self.ui.lineEdit_baudrate.setText("0")
@@ -113,7 +152,8 @@ class ModbusParserViewer(QMainWindow):
     def read_stop(self):
         self.ui.pushButton_pause.setEnabled(False)
         self.ui.pushButton_import.setEnabled(True)
-        self.ui.lineEdit_port.setEnabled(True)
+        self.ui.comboBox_port.setEnabled(True)
+        self.ui.pushButton_refreshPorts.setEnabled(True)
         self.ui.lineEdit_baudrate.setEnabled(True)
 
         self.reader_timer.stop()
