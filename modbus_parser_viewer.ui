@@ -38,12 +38,35 @@
           <string>Port:</string>
          </property>
          <property name="buddy">
-          <cstring>lineEdit_port</cstring>
+          <cstring>comboBox_port</cstring>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_port"/>
+        <widget class="QComboBox" name="comboBox_port">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_refreshPorts">
+         <property name="text">
+          <string>↻</string>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>30</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_2">

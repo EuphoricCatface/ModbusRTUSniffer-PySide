@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'modbus_parser_viewer.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.0
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,10 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame,
-    QGridLayout, QHBoxLayout, QLabel, QLineEdit,
-    QListWidget, QListWidgetItem, QMainWindow, QPlainTextEdit,
-    QPushButton, QSizePolicy, QTabWidget, QWidget)
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
+    QFrame, QGridLayout, QHBoxLayout, QLabel,
+    QLineEdit, QListWidget, QListWidgetItem, QMainWindow,
+    QPlainTextEdit, QPushButton, QSizePolicy, QTabWidget,
+    QWidget)
 
 class Ui_ModbusParserViewer(object):
     def setupUi(self, ModbusParserViewer):
@@ -50,10 +51,22 @@ class Ui_ModbusParserViewer(object):
 
         self.horizontalLayout_2.addWidget(self.label)
 
-        self.lineEdit_port = QLineEdit(self.widget)
-        self.lineEdit_port.setObjectName(u"lineEdit_port")
+        self.comboBox_port = QComboBox(self.widget)
+        self.comboBox_port.setObjectName(u"comboBox_port")
+        self.comboBox_port.setEditable(True)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.comboBox_port.sizePolicy().hasHeightForWidth())
+        self.comboBox_port.setSizePolicy(sizePolicy)
 
-        self.horizontalLayout_2.addWidget(self.lineEdit_port)
+        self.horizontalLayout_2.addWidget(self.comboBox_port)
+
+        self.pushButton_refreshPorts = QPushButton(self.widget)
+        self.pushButton_refreshPorts.setObjectName(u"pushButton_refreshPorts")
+        self.pushButton_refreshPorts.setMaximumSize(QSize(30, 16777215))
+
+        self.horizontalLayout_2.addWidget(self.pushButton_refreshPorts)
 
         self.label_2 = QLabel(self.widget)
         self.label_2.setObjectName(u"label_2")
@@ -151,7 +164,7 @@ class Ui_ModbusParserViewer(object):
 
         ModbusParserViewer.setCentralWidget(self.centralwidget)
 #if QT_CONFIG(shortcut)
-        self.label.setBuddy(self.lineEdit_port)
+        self.label.setBuddy(self.comboBox_port)
         self.label_2.setBuddy(self.lineEdit_baudrate)
 #endif // QT_CONFIG(shortcut)
 
@@ -167,6 +180,7 @@ class Ui_ModbusParserViewer(object):
         ModbusParserViewer.setWindowTitle(QCoreApplication.translate("ModbusParserViewer", u"ModbusParserViewer", None))
         self.pushButton_import.setText(QCoreApplication.translate("ModbusParserViewer", u"Import Raw Data", None))
         self.label.setText(QCoreApplication.translate("ModbusParserViewer", u"Port:", None))
+        self.pushButton_refreshPorts.setText(QCoreApplication.translate("ModbusParserViewer", u"\u21bb", None))
         self.label_2.setText(QCoreApplication.translate("ModbusParserViewer", u"Baudrate:", None))
         self.pushButton_start.setText(QCoreApplication.translate("ModbusParserViewer", u"Start", None))
         self.pushButton_pause.setText(QCoreApplication.translate("ModbusParserViewer", u"Pause", None))
